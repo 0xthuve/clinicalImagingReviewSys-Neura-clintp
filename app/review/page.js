@@ -1,4 +1,6 @@
 "use client";
+import { motion } from "framer-motion";
+
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -68,6 +70,31 @@ const ReviewCase = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <motion.header
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-between border-b border-gray-200 px-10 py-4 bg-white/80 backdrop-blur-sm"
+      >
+        <div className="flex items-center gap-4 text-gray-900">
+          <motion.div
+            className="w-10 h-10"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <img
+              src="/logo-removebg-preview.png"
+              alt="Breast Cancer Icon"
+              className="w-full h-full object-contain"
+            />
+          </motion.div>
+
+          <h2 className="text-xl font-bold tracking-tight">
+            Breast Cancer Review Platform
+          </h2>
+        </div>
+      </motion.header>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
@@ -140,15 +167,13 @@ const ReviewCase = () => {
                   <div className="flex items-center space-x-3 mb-4">
                     <Brain className="w-5 h-5 text-emerald-600" />
                     <h3 className="text-lg font-semibold text-gray-900">
-                      AI Prediction
+                      Prediction Image
                     </h3>
                   </div>
                   <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center group-hover:border-emerald-300 transition-colors duration-300">
                     <div className="text-center">
                       <Brain className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-500 text-sm">
-                        AI Analysis Result
-                      </p>
+                      <p className="text-gray-500 text-sm">Analysis Result</p>
                     </div>
                   </div>
                 </div>

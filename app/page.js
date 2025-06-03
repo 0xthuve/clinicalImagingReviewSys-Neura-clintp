@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import breastCancerIcon from "../public/logo-removebg-preview.png"; // Adjust the path as necessary
 
 const App = () => {
   const [userId, setUserId] = useState("");
@@ -81,21 +82,17 @@ const App = () => {
         >
           <div className="flex items-center gap-4 text-gray-900">
             <motion.div
-              className="size-6"
+              className="w-10 h-10"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <img
+                src="/logo-removebg-preview.png"
+                alt="Breast Cancer Icon"
+                className="w-full h-full object-contain"
+              />
             </motion.div>
+
             <h2 className="text-xl font-bold tracking-tight">
               Breast Cancer Review Platform
             </h2>
