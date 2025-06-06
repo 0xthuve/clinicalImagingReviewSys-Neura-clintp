@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import {
   LogOut,
   Brain,
@@ -101,10 +102,20 @@ const ReviewCase = () => {
 
           // Check if this is the last case
           if (currentCaseIndex >= cases.length - 1) {
-            alert("All cases reviewed successfully!");
-            // Optionally, redirect or clear session instead of reloading
-            // window.location.reload();
-            router.push("/"); // Redirect to home or a completion page
+            const TOAST_DURATION = 3000;
+            toast.success("All cases reviewed successfully!", {
+              position: "top-right", // Corrected from "right-top" to a valid position
+              autoClose: TOAST_DURATION,
+              theme: "dark", // Changed from "dark: true" to "theme: 'dark'" for dark mode
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            setTimeout(() => {
+              router.push("/");
+            }, TOAST_DURATION);
+
             return;
           }
 
@@ -183,6 +194,14 @@ const ReviewCase = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
       <Particles />
       <Header
         role={roleName}
