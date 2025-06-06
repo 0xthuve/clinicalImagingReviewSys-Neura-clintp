@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import breastCancerIcon from "../public/logo-removebg-preview.png"; // Adjust the path as necessary
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [userId, setUserId] = useState("");
@@ -42,9 +44,10 @@ const App = () => {
 
       const data = await res.json();
 
-      if (data.exists) {
+      if (data.exists && data.role) {
         localStorage.setItem("userId", userId);
-        router.push("/review");
+        localStorage.setItem("role", data.role);
+        router.push(`/review?role=${encodeURIComponent(data.role)}`);
       } else {
         setError("User ID not found. Please try again.");
       }
