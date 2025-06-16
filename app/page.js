@@ -23,7 +23,7 @@ const App = () => {
 
   const handleLogin = async () => {
     if (!userId.trim()) {
-      setError("Please enter your ID");
+      setError("Please enter your ID.");
       return;
     }
 
@@ -39,7 +39,7 @@ const App = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok.");
       }
 
       const data = await res.json();
@@ -47,12 +47,17 @@ const App = () => {
       if (data.exists && data.role) {
         localStorage.setItem("userId", userId);
         localStorage.setItem("role", data.role);
-        router.push(`/review?role=${encodeURIComponent(data.role)}`);
+
+        if (data.role === "Admin") {
+          router.push("/admin"); // Redirect to admin dashboard
+        } else {
+          router.push(`/review?role=${encodeURIComponent(data.role)}`);
+        }
       } else {
         setError("User ID not found. Please try again.");
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed.", error);
       setError("An error occurred. Please try again later.");
     } finally {
       setLoading(false);
