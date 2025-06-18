@@ -21,22 +21,33 @@ export async function GET() {
 }
 
 // Create a new patient
+
 export async function POST(req) {
   try {
-    const { patientId, originalImage, predictedImage } = await req.json();
+    const {
+      patientId,
+      originalImage,
+      originalimageName,
+      predictedImage,
+      predictedImageName,
+    } = await req.json();
 
-    if (!patientId || !originalImage) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    if (!patientId || !originalImage || !originalimageName) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     const client = await clientPromise;
     const db = client.db("BCAN");
 
-    // Insert new patient with predefined structure
     await db.collection("patients").insertOne({
       patientId,
       originalImage,
+      originalimageName,
       predictedImage: predictedImage || "",
+      predictedImageName: predictedImageName || "",
       createdAt: new Date(),
       Consultant: {
         questions: {
@@ -76,7 +87,9 @@ export async function PUT(req) {
     const {
       patientId,
       originalImage,
+      originalimageName,
       predictedImage,
+      predictedImageName,
       ConsultantAnswered,
       RadiologistAnswered,
     } = await req.json();
@@ -91,11 +104,12 @@ export async function PUT(req) {
     const client = await clientPromise;
     const db = client.db("BCAN");
 
-    // Perform the update while retaining the questions
     const update = {
       $set: {
         originalImage,
+        originalimageName,
         predictedImage,
+        predictedImageName,
         "Consultant.answered": ConsultantAnswered,
         "Radiologist.answered": RadiologistAnswered,
       },
