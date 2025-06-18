@@ -154,3 +154,36 @@ export async function DELETE(req) {
     );
   }
 }
+
+// export async function GET(req) {
+//   try {
+//     const client = await clientPromise;
+//     const db = client.db("BCAN");
+
+//     const url = new URL(req.url);
+//     const id = url.searchParams.get("id");
+
+//     if (!id) {
+//       return NextResponse.json(
+//         { error: "Patient ID is required" },
+//         { status: 400 }
+//       );
+//     }
+
+//     const patient = await db
+//       .collection("patients")
+//       .findOne({ _id: new ObjectId(id) });
+
+//     if (!patient) {
+//       return NextResponse.json({ error: "Patient not found" }, { status: 404 });
+//     }
+
+//     return NextResponse.json({ patient });
+//   } catch (error) {
+//     console.error("Error fetching patient:", error);
+//     return NextResponse.json(
+//       { error: "Failed to fetch patient" },
+//       { status: 500 }
+//     );
+//   }
+// }
