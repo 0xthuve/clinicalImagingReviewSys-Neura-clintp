@@ -1287,7 +1287,8 @@ export default function AdminDashboard() {
               </div>
               <div className="mb-3">
                 <h3 className="text-base font-bold text-gray-800 mb-1">
-                  Radiologist
+                  Radiologist :{" "}
+                  {selectedPatient.Radiologist?.name || "Not assigned"}
                 </h3>
                 {selectedPatient.Radiologist?.questions ? (
                   <ul className="space-y-1">
