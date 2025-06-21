@@ -58,6 +58,7 @@ export async function POST(req) {
           que5: { text: "Computational Effeciency", answer: false },
         },
         answered: false,
+        reviewerId: "",
       },
       Radiologist: {
         questions: {
@@ -68,6 +69,7 @@ export async function POST(req) {
           que5: { text: "Computational Effeciency", answer: false },
         },
         answered: false,
+        reviewerId: "",
       },
     });
 
@@ -114,6 +116,22 @@ export async function PUT(req) {
         "Radiologist.answered": RadiologistAnswered,
       },
     };
+
+    // If Consultant is not answered, clear answers and reviewerId
+    if (!ConsultantAnswered) {
+      for (let i = 1; i <= 5; i++) {
+        update.$set[`Consultant.questions.que${i}.answer`] = "false";
+      }
+      update.$set["Consultant.reviewerId"] = "";
+    }
+
+    // If Radiologist is not answered, clear answers and reviewerId
+    if (!RadiologistAnswered) {
+      for (let i = 1; i <= 5; i++) {
+        update.$set[`Radiologist.questions.que${i}.answer`] = "false";
+      }
+      update.$set["Radiologist.reviewerId"] = "";
+    }
 
     const updateResult = await db
       .collection("patients")

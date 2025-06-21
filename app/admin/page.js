@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-//import html2pdf from "html2pdf.js";
 
 export default function AdminDashboard() {
   const [patients, setPatients] = useState([]);
@@ -285,7 +284,9 @@ export default function AdminDashboard() {
       if (lowerAnswer === "medium") return 2;
       if (lowerAnswer === "high") return 3;
     }
-    return 0;
+    // Handle boolean answers (as per database JSON)
+    if (answer === false) return 0; // Default score for unanswered/false
+    return 0; // Fallback for any other type
   };
 
   const getTotalScore = (consultant, radiologist) => {
@@ -336,7 +337,11 @@ export default function AdminDashboard() {
                  .map(
                    ([key, q]) =>
                      `<li>${q.text}: ${
-                       q.answer || "Not answered"
+                       typeof q.answer === "boolean"
+                         ? q.answer
+                           ? "Answered"
+                           : "Not answered"
+                         : q.answer || "Not answered"
                      } (Score: ${calculateScore(q.answer)})</li>`
                  )
                  .join("")
@@ -351,7 +356,11 @@ export default function AdminDashboard() {
                  .map(
                    ([key, q]) =>
                      `<li>${q.text}: ${
-                       q.answer || "Not answered"
+                       typeof q.answer === "boolean"
+                         ? q.answer
+                           ? "Answered"
+                           : "Not answered"
+                         : q.answer || "Not answered"
                      } (Score: ${calculateScore(q.answer)})</li>`
                  )
                  .join("")
@@ -1263,7 +1272,8 @@ export default function AdminDashboard() {
               </h2>
               <div className="mb-3">
                 <h3 className="text-base font-bold text-gray-800 mb-1">
-                  Consultant
+                  Consultant:{" "}
+                  {selectedPatient.Consultant?.reviewerId || "Not assigned"}
                 </h3>
                 {selectedPatient.Consultant?.questions ? (
                   <ul className="space-y-1">
@@ -1272,7 +1282,11 @@ export default function AdminDashboard() {
                         <li key={key} className="text-sm text-gray-700">
                           {q.text}:{" "}
                           <span className="font-semibold">
-                            {q.answer || "Not answered"}
+                            {typeof q.answer === "boolean"
+                              ? q.answer
+                                ? "Answered"
+                                : "Not answered"
+                              : q.answer || "Not answered"}
                           </span>{" "}
                           <span className="text-blue-600 font-semibold">
                             ({calculateScore(q.answer)})
@@ -1287,8 +1301,8 @@ export default function AdminDashboard() {
               </div>
               <div className="mb-3">
                 <h3 className="text-base font-bold text-gray-800 mb-1">
-                  Radiologist :{" "}
-                  {selectedPatient.Radiologist?.name || "Not assigned"}
+                  Radiologist:{" "}
+                  {selectedPatient.Radiologist?.reviewerId || "Not assigned"}
                 </h3>
                 {selectedPatient.Radiologist?.questions ? (
                   <ul className="space-y-1">
@@ -1297,7 +1311,11 @@ export default function AdminDashboard() {
                         <li key={key} className="text-sm text-gray-700">
                           {q.text}:{" "}
                           <span className="font-semibold">
-                            {q.answer || "Not answered"}
+                            {typeof q.answer === "boolean"
+                              ? q.answer
+                                ? "Answered"
+                                : "Not answered"
+                              : q.answer || "Not answered"}
                           </span>{" "}
                           <span className="text-green-600 font-semibold">
                             ({calculateScore(q.answer)})

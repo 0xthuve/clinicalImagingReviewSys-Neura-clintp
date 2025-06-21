@@ -38,23 +38,26 @@ const App = () => {
         body: JSON.stringify({ userId }),
       });
 
-      if (!res.ok) {
-        throw new Error("Network response was not ok.");
-      }
-
       const data = await res.json();
+
+      if (!res.ok) {
+        // Display specific error from backend if provided
+        const errorMessage = data?.error || "Login failed. Please try again.";
+        setError(errorMessage);
+        return;
+      }
 
       if (data.exists && data.role) {
         localStorage.setItem("userId", userId);
         localStorage.setItem("role", data.role);
 
         if (data.role === "Admin") {
-          router.push("/admin"); // Redirect to admin dashboard
+          router.push("/admin");
         } else {
           router.push(`/review?role=${encodeURIComponent(data.role)}`);
         }
       } else {
-        setError("User ID not found. Please try again.");
+        setError("Login failed. User ID does not exist.");
       }
     } catch (error) {
       console.error("Login failed.", error);
