@@ -1,208 +1,453 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import breastCancerIcon from "../public/logo-removebg-preview.png"; // Adjust the path as necessary
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Download, Mail, MapPin, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { Inter, Poppins } from "next/font/google";
 
-const App = () => {
-  const [userId, setUserId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const router = useRouter();
+// Font Configuration
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"], // Added 700 for bold text
+  variable: "--font-inter",
+});
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"], // 400 for regular, 600 for semi-bold, 700 for bold
+  variable: "--font-poppins",
+});
 
-  // Clear error after 3 seconds
+// Button Component
+const Button = ({ children, className = "", ...props }) => (
+  <button
+    className={`inline-flex items-center px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 ${inter.className} ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
+
+// Card Components
+const Card = ({ children }) => (
+  <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-transform duration-300 hover:shadow-xl">
+    {children}
+  </div>
+);
+const CardContent = ({ children, className = "" }) => (
+  <div className={`p-6 ${inter.className} ${className}`}>{children}</div>
+);
+
+export default function Component() {
+  const [scrollY, setScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const handleLogin = async () => {
-    if (!userId.trim()) {
-      setError("Please enter your ID.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        // Display specific error from backend if provided
-        const errorMessage = data?.error || "Login failed. Please try again.";
-        setError(errorMessage);
-        return;
-      }
-
-      if (data.exists && data.role) {
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("role", data.role);
-
-        if (data.role === "Admin") {
-          router.push("/admin");
-        } else {
-          router.push(`/review?role=${encodeURIComponent(data.role)}`);
-        }
-      } else {
-        setError("Login failed. User ID does not exist.");
-      }
-    } catch (error) {
-      console.error("Login failed.", error);
-      setError("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !loading) {
-      handleLogin();
-    }
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <div
-      className="relative flex min-h-screen flex-col bg-gradient-to-br from-blue-50 to-pink-50 overflow-hidden"
-      style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
-    >
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-200 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200 rounded-full opacity-20 blur-3xl" />
-      </div>
-
-      <div className="layout-container flex h-full grow flex-col relative z-10">
-        <motion.header
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-between border-b border-gray-200 px-10 py-4 bg-white/80 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-4 text-gray-900">
-            <motion.div
-              className="w-10 h-10"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <img
-                src="/logo-removebg-preview.png"
-                alt="Breast Cancer Icon"
-                className="w-full h-full object-contain"
-              />
-            </motion.div>
-
-            <h2 className="text-xl font-bold tracking-tight">
-              Breast Cancer Review Platform
-            </h2>
-          </div>
-        </motion.header>
-
-        <div className="flex flex-1 items-center justify-center py-8 px-4 sm:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-8"
-          >
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">
-              Welcome Back
-            </h2>
-            <p className="text-center text-gray-600 mb-6">
-              Enter your unique ID to access the platform
-            </p>
-
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center"
-                  role="alert"
-                >
-                  {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="space-y-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Enter your unique ID"
-                  value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all duration-200"
-                  aria-label="User ID"
-                  disabled={loading}
-                />
-                <motion.div
-                  className="absolute inset-y-0 right-3 flex items-center"
-                  animate={{ opacity: loading ? 1 : 0 }}
-                >
-                  <svg
-                    className="animate-spin h-5 w-5 text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                </motion.div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleLogin}
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
-                aria-label="Login to platform"
+    <div className={`min-h-screen bg-gray-50 ${inter.className}`}>
+      {/* Header */}
+      <header className="bg-gradient-to-r from-[#0b354c] to-[#1a4a6b] text-white px-4 py-4 sticky top-0 z-50 shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span
+                className={`text-white font-bold text-lg ${poppins.className}`}
               >
-                {loading ? "Verifying..." : "Login"}
-              </motion.button>
+                V
+              </span>
             </div>
-
-            <p className="mt-6 text-center text-sm text-gray-500">
-              Need assistance?{" "}
-              <a
-                href="/support"
-                className="text-blue-600 hover:text-blue-800 font-medium"
+            <span className={`text-2xl font-bold ${poppins.className}`}>
+              VinDr
+            </span>
+          </div>
+          <nav className="hidden md:flex space-x-6">
+            {[
+              { name: "Database Expert Evaluation", href: "/login" },
+              { name: "Datasets", href: "/datasets" },
+              { name: "Research", href: "/research" },
+              { name: "Team", href: "/team" },
+              { name: "Careers", href: "/careers" },
+              { name: "News", href: "/news" },
+              { name: "Contact", href: "/contact" },
+            ].map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                Contact Support
-              </a>
-            </p>
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+          <button
+            className="md:hidden p-2"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <motion.nav
+            className="md:hidden mt-4 bg-[#0b354c]/95 rounded-lg p-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ul className="flex flex-col space-y-4">
+              {[
+                { name: "Database Expert Evaluation", href: "/login" },
+                { name: "Datasets", href: "/datasets" },
+                { name: "Research", href: "/research" },
+                { name: "Team", href: "/team" },
+                { name: "Careers", href: "/careers" },
+                { name: "News", href: "/news" },
+                { name: "Contact", href: "/contact" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="block text-gray-200 hover:text-white transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.nav>
+        )}
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative h-96 md:h-[300px] overflow-hidden bg-gradient-to-b from-slate-900 to-gray-800">
+        <div className="absolute inset-0">
+          <motion.div
+            className="absolute inset-0 opacity-20"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div className="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900" />
+          </motion.div>
+          <motion.div
+            className="absolute inset-0 opacity-10"
+            animate={{ x: [0, 60, 0], y: [0, -40, 0] }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div className="w-full h-10 bg-gradient-radial from-blue-600/40 via-transparent to-transparent" />
+          </motion.div>
+          <motion.div
+            className="absolute inset-0 opacity-30"
+            style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+          >
+            <div className="w-full h-full bg-[url('/vinbigdata_chestxray_abnormalities_detection_cover.png')] bg-cover bg-center mix-blend-overlay opacity-50" />
           </motion.div>
         </div>
-      </div>
+        <div className="relative z-10 flex items-center justify-left h-full pl-20">
+          <motion.h1
+            className={`${poppins.className} text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-wide text-center`}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            Mammography
+          </motion.h1>
+        </div>
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-blue-300/50 rounded-full"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${30 + (i % 3) * 20}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.2, 0.7, 0.2],
+            }}
+            transition={{
+              duration: 4 + i,
+              repeat: Infinity,
+              delay: i * 0.3,
+            }}
+          />
+        ))}
+      </section>
+
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        {/* Intro Section */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-12 h-12 bg-blue-600 rounded-lg mr-3 flex items-center justify-center">
+              <span
+                className={`text-white font-bold text-xl ${poppins.className}`}
+              >
+                V
+              </span>
+            </div>
+            <span
+              className={`text-2xl sm:text-3xl font-bold text-gray-900 ${poppins.className}`}
+            >
+              VinBigData
+            </span>
+          </div>
+          <h2
+            className={`text-xl sm:text-2xl font-semibold text-gray-900 mb-4 max-w-3xl mx-auto ${poppins.className}`}
+          >
+            VinDr-Mammo: A large-scale benchmark dataset for computer-aided
+            diagnosis in full-field digital mammography
+          </h2>
+        </div>
+
+        {/* Dataset Description */}
+        <section className="mb-12 sm:mb-16">
+          <h3
+            className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
+          >
+            Dataset Description
+          </h3>
+          <p className="text-gray-700 leading-relaxed mb-4 text-sm sm:text-base">
+            VinDr-Mammo is a comprehensive dataset of 5,000 four-view full-field
+            digital mammography exams, each double-read with arbitration by a
+            third radiologist for accuracy.
+          </p>
+          <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
+            This publicly available dataset aims to advance computer-aided
+            detection (CADe) and diagnosis (CADx) tools for breast cancer
+            screening.
+          </p>
+        </section>
+
+        {/* Medical Images */}
+        <section className="mb-12 sm:mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            {["CC View", "MLO View"].map((label, i) => (
+              <Card key={i}>
+                <CardContent>
+                  <div className="bg-gray-900 rounded-lg overflow-hidden">
+                    <Image
+                      src="/placeholder.svg?height=300&width=300"
+                      alt={`Mammography scan ${label}`}
+                      width={300}
+                      height={300}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-3 text-center">
+                    {label}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            Figure 1: Example with BI-RADS 5 and BI-RADS 1 in opposing breasts.
+          </p>
+        </section>
+
+        {/* Statistics Chart */}
+        <section className="mb-12 sm:mb-16">
+          <Card>
+            <CardContent className="p-6 sm:p-8">
+              <div className="h-48 sm:h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                <p className="text-gray-500 text-sm sm:text-base">
+                  Age Distribution Chart Placeholder
+                </p>
+              </div>
+              <p className="text-sm text-gray-600 mt-4 text-center">
+                Figure 2: Distribution of patient age.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Data Table */}
+        <section className="mb-12 sm:mb-16">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300 text-sm sm:text-base">
+              <thead className="bg-gray-100">
+                <tr>
+                  {["Split", "Training", "Test", "Total"].map((col) => (
+                    <th
+                      key={col}
+                      className={`border border-gray-300 px-4 py-2 text-left font-medium ${poppins.className}`}
+                    >
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2">Exams</td>
+                  <td className="border border-gray-300 px-4 py-2">4,000</td>
+                  <td className="border border-gray-300 px-4 py-2">1,000</td>
+                  <td className="border border-gray-300 px-4 py-2">5,000</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2">Images</td>
+                  <td className="border border-gray-300 px-4 py-2">16,000</td>
+                  <td className="border border-gray-300 px-4 py-2">4,000</td>
+                  <td className="border border-gray-300 px-4 py-2">20,000</td>
+                </tr>
+              </tbody>
+            </table>
+            <p className="text-sm text-gray-600 mt-4">
+              Table 1: Statistics of exams and images for each split.
+            </p>
+          </div>
+        </section>
+
+        {/* Download */}
+        <section className="mb-12 sm:mb-16 text-center">
+          <h3
+            className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
+          >
+            Download
+          </h3>
+          <p className="text-gray-700 mb-6 text-sm sm:text-base">
+            The dataset is available on PhysioNet.
+          </p>
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            <Download className="w-5 h-5 mr-2" />
+            Download Dataset
+          </Button>
+        </section>
+
+        {/* Citation */}
+        <section className="mb-12 sm:mb-16">
+          <h3
+            className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
+          >
+            Citation
+          </h3>
+          <div className="bg-gray-100 p-4 sm:p-6 rounded-lg">
+            <code
+              className={`text-sm text-gray-700 whitespace-pre-wrap ${inter.className}`}
+            >
+              {`@article{nguyen2022vindr,
+  title={VinDr-Mammo: A large-scale benchmark dataset for computer-aided diagnosis in full-field digital mammography},
+  author={Nguyen, Hieu T and others},
+  journal={Scientific Data},
+  year={2022},
+  publisher={Nature Publishing Group}
+}`}
+            </code>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-slate-900 to-gray-800 text-white py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          <div>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span
+                  className={`text-white font-bold text-lg ${poppins.className}`}
+                >
+                  V
+                </span>
+              </div>
+              <span className={`text-xl font-semibold ${poppins.className}`}>
+                VinDr
+              </span>
+            </div>
+            <div className="flex space-x-4">
+              {["f", "t", "in"].map((icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600 transition-colors duration-200"
+                  aria-label={`Social media link ${icon}`}
+                >
+                  <span className="text-sm font-medium">{icon}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className={`text-lg font-semibold mb-4 ${poppins.className}`}>
+              Quick Links
+            </h4>
+            <ul className="space-y-3 text-gray-300 text-sm sm:text-base">
+              {[
+                "About",
+                "VinDr-RibCX",
+                "VinDr-CXR",
+                "VinDr-Lab",
+                "Publications",
+                "Team",
+                "Careers",
+                "News",
+                "Contact",
+              ].map((link) => (
+                <li key={link}>
+                  <Link
+                    href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="hover:text-white transition-colors duration-200"
+                  >
+                    {link}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className={`text-lg font-semibold mb-4 ${poppins.className}`}>
+              Contacts
+            </h4>
+            <div className="space-y-4 text-gray-300 text-sm sm:text-base">
+              <div className="flex items-start space-x-2">
+                <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <span>
+                  Building A1, VinUniversity, Vinhomes Ocean Park, Gia Lam, Ha
+                  Noi, Viet Nam
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Mail className="w-5 h-5 flex-shrink-0" />
+                <a
+                  href="mailto:vindr.contact@vinbigdata.org"
+                  className="hover:text-white"
+                >
+                  vindr.contact@vinbigdata.org
+                </a>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 className={`text-lg font-semibold mb-4 ${poppins.className}`}>
+              Newsletter
+            </h4>
+            <div className="flex flex-col space-y-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className={`px-4 py-2 rounded-lg bg-gray-700 text-white border-none focus:outline-none focus:ring-2 focus:ring-blue-500 ${inter.className}`}
+                aria-label="Email for newsletter"
+                suppressHydrationWarning={true}
+              />
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400 text-sm">
+          <p>© 2023 VinBigData. All Rights Reserved.</p>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default App;
+}
