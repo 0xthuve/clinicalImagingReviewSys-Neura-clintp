@@ -61,20 +61,19 @@ export default function Component() {
               <span
                 className={`text-white font-bold text-lg ${poppins.className}`}
               >
-                V
+                B
               </span>
             </div>
             <span className={`text-2xl font-bold ${poppins.className}`}>
-              VinDr
+              Thanusanth
             </span>
           </div>
           <nav className="hidden md:flex space-x-6">
             {[
-              { name: "Database Expert Evaluation", href: "/login" },
+              { name: "Medical Expert Evaluation", href: "/login" },
               { name: "Datasets", href: "/datasets" },
-              { name: "Research", href: "/research" },
+              { name: "Researches", href: "/researches" },
               { name: "Team", href: "/team" },
-              { name: "Careers", href: "/careers" },
               { name: "News", href: "/news" },
               { name: "Contact", href: "/contact" },
             ].map((item) => (
@@ -105,11 +104,10 @@ export default function Component() {
           >
             <ul className="flex flex-col space-y-4">
               {[
-                { name: "Database Expert Evaluation", href: "/login" },
+                { name: "Medical Expert Evaluation", href: "/login" },
                 { name: "Datasets", href: "/datasets" },
-                { name: "Research", href: "/research" },
+                { name: "Researches", href: "/researches" },
                 { name: "Team", href: "/team" },
-                { name: "Careers", href: "/careers" },
                 { name: "News", href: "/news" },
                 { name: "Contact", href: "/contact" },
               ].map((item) => (
@@ -159,7 +157,7 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            Mammography
+            Explainable AI
           </motion.h1>
         </div>
         {[...Array(6)].map((_, i) => (
@@ -192,7 +190,7 @@ export default function Component() {
               <span
                 className={`text-white font-bold text-xl ${poppins.className}`}
               >
-                V
+                B
               </span>
             </div>
             <span
@@ -204,8 +202,8 @@ export default function Component() {
           <h2
             className={`text-xl sm:text-2xl font-semibold text-gray-900 mb-4 max-w-3xl mx-auto ${poppins.className}`}
           >
-            VinDr-Mammo: A large-scale benchmark dataset for computer-aided
-            diagnosis in full-field digital mammography
+            Thanusanth-Explainable AI: A large-scale benchmark dataset for
+            computer-aided diagnosis in full-field digital Explainable AI
           </h2>
         </div>
 
@@ -217,9 +215,9 @@ export default function Component() {
             Dataset Description
           </h3>
           <p className="text-gray-700 leading-relaxed mb-4 text-sm sm:text-base">
-            VinDr-Mammo is a comprehensive dataset of 5,000 four-view full-field
-            digital mammography exams, each double-read with arbitration by a
-            third radiologist for accuracy.
+            Thanusanth-Explainable AI is a comprehensive dataset of 5,000
+            four-view full-field digital Explainable AI exams, each double-read
+            with arbitration by a third radiologist for accuracy.
           </p>
           <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
             This publicly available dataset aims to advance computer-aided
@@ -237,7 +235,7 @@ export default function Component() {
                   <div className="bg-gray-900 rounded-lg overflow-hidden">
                     <Image
                       src="/placeholder.svg?height=300&width=300"
-                      alt={`Mammography scan ${label}`}
+                      alt={`Explainable AI scan ${label}`}
                       width={300}
                       height={300}
                       className="w-full h-auto object-cover"
@@ -335,8 +333,8 @@ export default function Component() {
             <code
               className={`text-sm text-gray-700 whitespace-pre-wrap ${inter.className}`}
             >
-              {`@article{nguyen2022vindr,
-  title={VinDr-Mammo: A large-scale benchmark dataset for computer-aided diagnosis in full-field digital mammography},
+              {`@article{nguyen2022Thanusanth,
+  title={Thanusanth-Mammo: A large-scale benchmark dataset for computer-aided diagnosis in full-field digital Explainable AI},
   author={Nguyen, Hieu T and others},
   journal={Scientific Data},
   year={2022},
@@ -360,7 +358,7 @@ export default function Component() {
                 </span>
               </div>
               <span className={`text-xl font-semibold ${poppins.className}`}>
-                VinDr
+                Thanusanth
               </span>
             </div>
             <div className="flex space-x-4">
@@ -383,9 +381,9 @@ export default function Component() {
             <ul className="space-y-3 text-gray-300 text-sm sm:text-base">
               {[
                 "About",
-                "VinDr-RibCX",
-                "VinDr-CXR",
-                "VinDr-Lab",
+                "Thanusanth-RibCX",
+                "Thanusanth-CXR",
+                "Thanusanth-Lab",
                 "Publications",
                 "Team",
                 "Careers",
@@ -418,10 +416,10 @@ export default function Component() {
               <div className="flex items-center space-x-2">
                 <Mail className="w-5 h-5 flex-shrink-0" />
                 <a
-                  href="mailto:vindr.contact@vinbigdata.org"
+                  href="mailto:Thanusanth.contact@vinbigdata.org"
                   className="hover:text-white"
                 >
-                  vindr.contact@vinbigdata.org
+                  Thanusanth.contact@vinbigdata.org
                 </a>
               </div>
             </div>
