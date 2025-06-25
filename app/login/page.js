@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -97,9 +99,11 @@ const App = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <img
+              <Image
                 src="/logo-removebg-preview.png"
                 alt="Breast Cancer Icon"
+                width={40}
+                height={40}
                 className="w-full h-full object-contain"
               />
             </motion.div>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminDashboard() {
   const [patients, setPatients] = useState([]);
@@ -903,7 +904,7 @@ export default function AdminDashboard() {
         {/* Add Patient Modal */}
         {showAddModal && (
           <div
-            className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center bg-gray-500/75"
+            className="fixed inset-0 z-[1000] overflow-y-auto flex items-center justify-center bg-gray-500/75"
             onClick={() => setShowAddModal(false)}
           >
             <div
@@ -959,9 +960,11 @@ export default function AdminDashboard() {
                     )}
                     {formData.originalImage &&
                       formData.originalImage !== "" && (
-                        <img
+                        <Image
                           src={formData.originalImage}
-                          alt="Preview"
+                          alt="Original Image Preview"
+                          width={128}
+                          height={128}
                           className="mt-2 w-32 h-32 object-cover rounded"
                         />
                       )}
@@ -988,9 +991,11 @@ export default function AdminDashboard() {
                     )}
                     {formData.predictedImage &&
                       formData.predictedImage !== "" && (
-                        <img
+                        <Image
                           src={formData.predictedImage}
-                          alt="Preview"
+                          alt="Predicted Image Preview"
+                          width={128}
+                          height={128}
                           className="mt-2 w-32 h-32 object-cover rounded"
                         />
                       )}
@@ -1019,7 +1024,7 @@ export default function AdminDashboard() {
         {/* Edit Patient Modal */}
         {showEditModal && selectedPatient && (
           <div
-            className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center bg-gray-500/75"
+            className="fixed inset-0 z-[1000] overflow-y-auto flex items-center justify-center bg-gray-500/75"
             onClick={() => setShowEditModal(false)}
           >
             <div
@@ -1057,9 +1062,11 @@ export default function AdminDashboard() {
                     )}
                     {formData.originalImage &&
                       formData.originalImage !== "" && (
-                        <img
+                        <Image
                           src={formData.originalImage}
-                          alt="Preview"
+                          alt="Original Image Preview"
+                          width={128}
+                          height={128}
                           className="mt-2 w-32 h-32 object-cover rounded"
                         />
                       )}
@@ -1077,7 +1084,7 @@ export default function AdminDashboard() {
                       id="editPredictedImage"
                       accept="image/*"
                       onChange={(e) => handleImageUpload(e, "predictedImage")}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                     {formData.predictedImageName && (
                       <p className="mt-1 text-sm text-gray-500">
@@ -1086,101 +1093,105 @@ export default function AdminDashboard() {
                     )}
                     {formData.predictedImage &&
                       formData.predictedImage !== "" && (
-                        <img
+                        <Image
                           src={formData.predictedImage}
-                          alt="Preview"
+                          alt="Predicted Image Preview"
+                          width={128}
+                          height={128}
                           className="mt-2 w-32 h-32 object-cover rounded"
                         />
                       )}
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Consultant Status
-                    </label>
-                    <div className="mt-2 flex space-x-4">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name="ConsultantAnswered"
-                          value="true"
-                          checked={formData.ConsultantAnswered === true}
-                          onChange={(e) =>
-                            handleAnsweredChange(e, "ConsultantAnswered")
-                          }
-                          className="form-radio h-4 w-4 text-blue-600"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Completed
-                        </span>
+                  <div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Consultant Status
                       </label>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name="ConsultantAnswered"
-                          value="false"
-                          checked={formData.ConsultantAnswered === false}
-                          onChange={(e) =>
-                            handleAnsweredChange(e, "ConsultantAnswered")
-                          }
-                          className="form-radio h-4 w-4 text-blue-600"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Pending
-                        </span>
-                      </label>
+                      <div className="mt-2 flex space-x-4">
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="ConsultantAnswered"
+                            value="true"
+                            checked={formData.ConsultantAnswered === true}
+                            onChange={(e) =>
+                              handleAnsweredChange(e, "ConsultantAnswered")
+                            }
+                            className="form-radio h-4 w-4 text-blue-600"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">
+                            Completed
+                          </span>
+                        </label>
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="ConsultantAnswered"
+                            value="false"
+                            checked={formData.ConsultantAnswered === false}
+                            onChange={(e) =>
+                              handleAnsweredChange(e, "ConsultantAnswered")
+                            }
+                            className="form-radio h-4 w-4 text-blue-600"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">
+                            Pending
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Radiologist Status
-                    </label>
-                    <div className="mt-2 flex space-x-4">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name="RadiologistAnswered"
-                          value="true"
-                          checked={formData.RadiologistAnswered === true}
-                          onChange={(e) =>
-                            handleAnsweredChange(e, "RadiologistAnswered")
-                          }
-                          className="form-radio h-4 w-4 text-blue-600"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Completed
-                        </span>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Radiologist Status
                       </label>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          name="RadiologistAnswered"
-                          value="false"
-                          checked={formData.RadiologistAnswered === false}
-                          onChange={(e) =>
-                            handleAnsweredChange(e, "RadiologistAnswered")
-                          }
-                          className="form-radio h-4 w-4 text-blue-600"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Pending
-                        </span>
-                      </label>
+                      <div className="mt-2 flex space-x-4">
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="RadiologistAnswered"
+                            value="true"
+                            checked={formData.RadiologistAnswered === true}
+                            onChange={(e) =>
+                              handleAnsweredChange(e, "RadiologistAnswered")
+                            }
+                            className="form-radio h-4 w-4 text-blue-600"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">
+                            Completed
+                          </span>
+                        </label>
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="RadiologistAnswered"
+                            value="false"
+                            checked={formData.RadiologistAnswered === false}
+                            onChange={(e) =>
+                              handleAnsweredChange(e, "RadiologistAnswered")
+                            }
+                            className="form-radio h-4 w-4 text-blue-600"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">
+                            Pending
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button
-                      type="submit"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                      Update
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowEditModal(false)}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                      Cancel
-                    </button>
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                      <button
+                        type="submit"
+                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      >
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowEditModal(false)}
+                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -1191,7 +1202,7 @@ export default function AdminDashboard() {
         {/* Delete Confirmation Modal */}
         {showDeleteModal && selectedPatient && (
           <div
-            className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center bg-gray-500/75"
+            className="fixed inset-0 z-[1000] overflow-y-auto flex items-center justify-center bg-gray-500/75"
             onClick={() => setShowDeleteModal(false)}
           >
             <div
@@ -1199,7 +1210,7 @@ export default function AdminDashboard() {
               className="relative bg-white rounded-lg shadow-xl transform transition-all sm:max-w-lg w-full mx-4 pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
-              aria-modal="true"
+              aria-label="Delete Confirmation"
               tabIndex="-1"
             >
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -1256,22 +1267,27 @@ export default function AdminDashboard() {
         {/* View Patient Modal */}
         {showViewModal && selectedPatient && (
           <div
-            className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center px-2"
+            className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center px-2"
             onClick={() => setShowViewModal(false)}
+            role="dialog"
+            aria-label="View Patient"
           >
             <div
               ref={viewModalRef}
               className="bg-white rounded-xl shadow-lg w-full max-w-md p-5 relative pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
-              aria-modal="true"
+              aria-labelledby="view-patient-title"
               tabIndex="-1"
             >
-              <h2 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">
+              <h2
+                id="view-patient-title"
+                className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2"
+              >
                 Patient #{selectedPatient.patientId}
               </h2>
               <div className="mb-3">
-                <h3 className="text-base font-bold text-gray-800 mb-1">
+                <h3 className="text-base font-semibold text-gray-800 mb-1">
                   Consultant:{" "}
                   {selectedPatient.Consultant?.reviewerId || "Not assigned"}
                 </h3>
@@ -1300,7 +1316,7 @@ export default function AdminDashboard() {
                 )}
               </div>
               <div className="mb-3">
-                <h3 className="text-base font-bold text-gray-800 mb-1">
+                <h3 className="text-base font-semibold text-gray-800 mb-1">
                   Radiologist:{" "}
                   {selectedPatient.Radiologist?.reviewerId || "Not assigned"}
                 </h3>
@@ -1330,7 +1346,7 @@ export default function AdminDashboard() {
               </div>
               <div className="mb-4 text-sm text-center">
                 <div className="font-medium text-gray-700">Total Score</div>
-                <div className="text-lg font-bold text-blue-700">
+                <div className="text-lg font-semibold text-blue-600">
                   {getTotalScore(
                     selectedPatient.Consultant,
                     selectedPatient.Radiologist
