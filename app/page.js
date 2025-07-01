@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import logo from "@/public/logo-removebg-preview.png"; // Adjust the path as necessary
 import { motion } from "framer-motion";
-import { Download, Mail, MapPin, Menu, X } from "lucide-react";
+import {
+  Download,
+  Mail,
+  MapPin,
+  Menu,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import Link from "next/link";
 import { Inter, Poppins } from "next/font/google";
 
@@ -30,8 +39,10 @@ const Button = ({ children, className = "", ...props }) => (
 );
 
 // Card Components
-const Card = ({ children }) => (
-  <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-transform duration-300 hover:shadow-xl">
+const Card = ({ children, className = "" }) => (
+  <div
+    className={`bg-white shadow-lg rounded-xl overflow-hidden transition-transform duration-300 hover:shadow-xl ${className}`}
+  >
     {children}
   </div>
 );
@@ -42,6 +53,7 @@ const CardContent = ({ children, className = "" }) => (
 export default function Component() {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -50,6 +62,18 @@ export default function Component() {
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Scroll function for image carousel
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 280;
+      if (direction === "left") {
+        scrollRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      } else {
+        scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <div className={`min-h-screen bg-gray-50 ${inter.className}`}>
@@ -147,7 +171,7 @@ export default function Component() {
             className="absolute inset-0 opacity-30"
             style={{ transform: `translateY(${scrollY * 0.3}px)` }}
           >
-            <div className="w-full h-full bg-[url('/vinbigdata_chestxray_abnormalities_detection_cover.png')] bg-cover bg-center mix-blend-overlay opacity-50" />
+            <div className="w-full h-full bg-[url('/bgforexplainableai.jpg')] bg-cover bg-center mix-blend-overlay opacity-50" />
           </motion.div>
         </div>
         <div className="relative z-10 flex items-center justify-left h-full pl-20">
@@ -202,8 +226,9 @@ export default function Component() {
           <h2
             className={`text-xl sm:text-2xl font-semibold text-gray-900 mb-4 max-w-3xl mx-auto ${poppins.className}`}
           >
-            Thanusanth-Explainable AI: A large-scale benchmark dataset for
-            computer-aided diagnosis in full-field digital Explainable AI
+            Explainable AI will build trust and confidence by making model
+            decisions transparent, while also detecting biases and errors early
+            to keep AI systems fair, safe, and compliant.
           </h2>
         </div>
 
@@ -212,42 +237,59 @@ export default function Component() {
           <h3
             className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
           >
-            Dataset Description
+            Widly Used Explainable AI
           </h3>
           <p className="text-gray-700 leading-relaxed mb-4 text-sm sm:text-base">
-            Thanusanth-Explainable AI is a comprehensive dataset of 5,000
-            four-view full-field digital Explainable AI exams, each double-read
-            with arbitration by a third radiologist for accuracy.
-          </p>
-          <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-            This publicly available dataset aims to advance computer-aided
-            detection (CADe) and diagnosis (CADx) tools for breast cancer
-            screening.
+            Clinicians can simply drag and drop scans to get instant,
+            side-by-side visual explanations that reveal exactly what the AI
+            “sees.” No coding required—our seamless, cloud-based tool brings
+            transparency and trust directly into clinical workflows.
           </p>
         </section>
 
-        {/* Medical Images */}
-        <section className="mb-12 sm:mb-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            {["CC View", "MLO View"].map((label, i) => (
-              <Card key={i}>
+        {/* Horizontally Scrollable Image Section */}
+        <section className="mb-12 sm:mb-16 relative">
+          <button
+            onClick={() => scroll("left")}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+            aria-label="Scroll left"
+            type="button"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <div
+            ref={scrollRef}
+            className="flex overflow-x-auto space-x-6 px-10 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+          >
+            {[...Array(10)].map((_, i) => (
+              <Card key={i} className="flex-shrink-0 w-96">
+                {" "}
+                {/* Increased width */}
                 <CardContent>
                   <div className="bg-gray-900 rounded-lg overflow-hidden">
                     <Image
-                      src="/placeholder.svg?height=300&width=300"
-                      alt={`Explainable AI scan ${label}`}
-                      width={300}
-                      height={300}
+                      src={logo} // Replace with actual image source
+                      alt={`Scan ${i + 1}`}
+                      width={500} // Increased width
+                      height={500} // Increased height
                       className="w-full h-auto object-cover"
                     />
                   </div>
                   <p className="text-sm text-gray-600 mt-3 text-center">
-                    {label}
+                    Image {i + 1}
                   </p>
                 </CardContent>
               </Card>
             ))}
           </div>
+          <button
+            onClick={() => scroll("right")}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+            aria-label="Scroll right"
+            type="button"
+          >
+            <ChevronRight className="w-5 h-5 text-gray-600" />
+          </button>
           <p className="text-sm text-gray-600 mt-4 text-center">
             Figure 1: Example with BI-RADS 5 and BI-RADS 1 in opposing breasts.
           </p>
@@ -443,7 +485,7 @@ export default function Component() {
           </div>
         </div>
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>© 2023 VinBigData. All Rights Reserved.</p>
+          <p>© 2025 VinBigData. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
