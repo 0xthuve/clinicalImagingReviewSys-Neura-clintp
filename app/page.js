@@ -220,7 +220,7 @@ export default function Component() {
             <span
               className={`text-2xl sm:text-3xl font-bold text-gray-900 ${poppins.className}`}
             >
-              VinBigData
+              Thanusanth
             </span>
           </div>
           <h2
