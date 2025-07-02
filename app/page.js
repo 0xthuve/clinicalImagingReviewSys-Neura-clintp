@@ -28,6 +28,31 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+// Define your image and name data
+const imageData = [
+  {
+    src: "/imagedataset/cam.png",
+    name: "Class Activation Mapping (CAM)",
+  },
+  {
+    src: "/imagedataset/2.png",
+    name: "Gradient-weighted Class Activation Mapping (Grad-CAM)",
+  },
+  { src: "/imagedataset/3.png", name: "Integrated Gradients" },
+  {
+    src: "/imagedataset/3.1.png",
+    name: "SHAP (SHapley Additive exPlanations)",
+  },
+  { src: "/imagedataset/4.jpg", name: "Trainable Attention" },
+  {
+    src: "/imagedataset/5.png",
+    name: "Layer-wise Relevance Propagation (LRP)",
+  },
+  { src: "/imagedataset/6.png", name: "Guided Backpropagation" },
+  { src: "/imagedataset/7.png", name: "Attention Map" },
+  { src: "/imagedataset/8.png", name: "Saliency Map" },
+  { src: "/imagedataset/9.png", name: "Occlusion & Sensitivity Analysis" },
+];
 // Button Component
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -96,10 +121,10 @@ export default function Component() {
             {[
               { name: "Medical Expert Evaluation", href: "/login" },
               { name: "Datasets", href: "/datasets" },
-              { name: "Researches", href: "/researches" },
-              { name: "Team", href: "/team" },
-              { name: "News", href: "/news" },
-              { name: "Contact", href: "/contact" },
+              { name: "Researches", href: "#" },
+              { name: "Team", href: "#" },
+              { name: "News", href: "#" },
+              { name: "Contact", href: "#" },
             ].map((item) => (
               <Link
                 key={item.name}
@@ -130,10 +155,10 @@ export default function Component() {
               {[
                 { name: "Medical Expert Evaluation", href: "/login" },
                 { name: "Datasets", href: "/datasets" },
-                { name: "Researches", href: "/researches" },
-                { name: "Team", href: "/team" },
-                { name: "News", href: "/news" },
-                { name: "Contact", href: "/contact" },
+                { name: "Researches", href: "#" },
+                { name: "Team", href: "#" },
+                { name: "News", href: "#" },
+                { name: "Contact", href: "#" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -247,7 +272,6 @@ export default function Component() {
           </p>
         </section>
 
-        {/* Horizontally Scrollable Image Section */}
         <section className="mb-12 sm:mb-16 relative">
           <button
             onClick={() => scroll("left")}
@@ -257,31 +281,31 @@ export default function Component() {
           >
             <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
+
           <div
             ref={scrollRef}
             className="flex overflow-x-auto space-x-6 px-10 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
           >
-            {[...Array(10)].map((_, i) => (
+            {imageData.map((item, i) => (
               <Card key={i} className="flex-shrink-0 w-96">
-                {" "}
-                {/* Increased width */}
                 <CardContent>
                   <div className="bg-gray-900 rounded-lg overflow-hidden">
                     <Image
-                      src={logo} // Replace with actual image source
-                      alt={`Scan ${i + 1}`}
-                      width={500} // Increased width
-                      height={500} // Increased height
+                      src={item.src}
+                      alt={item.name}
+                      width={500}
+                      height={500}
                       className="w-full h-auto object-cover"
                     />
                   </div>
                   <p className="text-sm text-gray-600 mt-3 text-center">
-                    Image {i + 1}
+                    {item.name}
                   </p>
                 </CardContent>
               </Card>
             ))}
           </div>
+
           <button
             onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
@@ -290,6 +314,7 @@ export default function Component() {
           >
             <ChevronRight className="w-5 h-5 text-gray-600" />
           </button>
+
           <p className="text-sm text-gray-600 mt-4 text-center">
             Figure 1: Example with BI-RADS 5 and BI-RADS 1 in opposing breasts.
           </p>
