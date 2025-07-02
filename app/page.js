@@ -356,11 +356,11 @@ export default function Component() {
             Download
           </h3>
           <p className="text-gray-700 mb-6 text-sm sm:text-base">
-            The dataset is available on PhysioNet.
+            The Explainable AI Output
           </p>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Download className="w-5 h-5 mr-2" />
-            Download Dataset
+            Download
           </Button>
         </section>
 
