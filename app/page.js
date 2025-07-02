@@ -119,10 +119,11 @@ export default function Component() {
           </div>
           <nav className="hidden md:flex space-x-6">
             {[
+              { name: "Home", href: "/" },
               { name: "Medical Expert Evaluation", href: "/login" },
               { name: "Datasets", href: "/datasets" },
               { name: "Researches", href: "#" },
-              { name: "Team", href: "#" },
+
               { name: "News", href: "#" },
               { name: "Contact", href: "#" },
             ].map((item) => (
@@ -153,10 +154,11 @@ export default function Component() {
           >
             <ul className="flex flex-col space-y-4">
               {[
+                { name: "Home", href: "/" },
                 { name: "Medical Expert Evaluation", href: "/login" },
                 { name: "Datasets", href: "/datasets" },
                 { name: "Researches", href: "#" },
-                { name: "Team", href: "#" },
+
                 { name: "News", href: "#" },
                 { name: "Contact", href: "#" },
               ].map((item) => (
@@ -289,13 +291,12 @@ export default function Component() {
             {imageData.map((item, i) => (
               <Card key={i} className="flex-shrink-0 w-96">
                 <CardContent>
-                  <div className="bg-gray-900 rounded-lg overflow-hidden">
+                  <div className="aspect-[16/7] bg-gray-900 rounded-lg overflow-hidden relative">
                     <Image
                       src={item.src}
                       alt={item.name}
-                      width={500}
-                      height={500}
-                      className="w-full h-auto object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                   <p className="text-sm text-gray-600 mt-3 text-center">
