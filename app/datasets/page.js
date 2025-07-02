@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Inter, Poppins } from "next/font/google";
+import { f } from "html2pdf.js";
 
 // Font Configuration
 const inter = Inter({
@@ -86,7 +87,7 @@ export default function Component() {
     {
       name: "Digital Database for Screening Mammography (DDSM)",
       link: "https://www.cancerimagingarchive.net/collection/cbis-ddsm/",
-      biRads: true,
+      biRads: false,
       images: "2,620",
       patients: "-",
       maskImages: false,
@@ -99,7 +100,7 @@ export default function Component() {
     {
       name: "Breast Ultrasound Images Dataset (BUSI)",
       link: "https://www.kaggle.com/datasets/sabahesaraki/breast-ultrasound-images-dataset",
-      biRads: true,
+      biRads: flase,
       images: "780",
       patients: "600",
       maskImages: true,
@@ -117,7 +118,7 @@ export default function Component() {
     {
       name: "BUS-UCLM: Breast Ultrasound Dataset",
       link: "https://github.com/ellisdg/BUS-UCLM",
-      biRads: true,
+      biRads: false,
       images: "683",
       patients: "38",
       maskImages: false,
