@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Inter, Poppins } from "next/font/google";
-import { f } from "html2pdf.js";
 
 // Font Configuration
 const inter = Inter({
