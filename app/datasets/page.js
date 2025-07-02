@@ -100,7 +100,7 @@ export default function Component() {
     {
       name: "Breast Ultrasound Images Dataset (BUSI)",
       link: "https://www.kaggle.com/datasets/sabahesaraki/breast-ultrasound-images-dataset",
-      biRads: flase,
+      biRads: false,
       images: "780",
       patients: "600",
       maskImages: true,
