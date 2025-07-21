@@ -33,26 +33,55 @@ const imageData = [
   {
     src: "/imagedataset/cam.png",
     name: "Class Activation Mapping (CAM)",
+    url: "http://13.61.90.242:1234/ui/cam",
   },
   {
     src: "/imagedataset/2.png",
     name: "Gradient-weighted Class Activation Mapping (Grad-CAM)",
+    url: "http://13.61.90.242:1234/ui/gradcam",
   },
-  { src: "/imagedataset/3.png", name: "Integrated Gradients" },
+  {
+    src: "/imagedataset/3.png",
+    name: "Integrated Gradients",
+    url: "http://13.61.90.242:1234/ui/ig",
+  },
   {
     src: "/imagedataset/3.1.png",
     name: "SHAP (SHapley Additive exPlanations)",
+    url: "http://13.61.90.242:1234/ui/shap",
   },
-  { src: "/imagedataset/4.jpg", name: "Trainable Attention" },
+  {
+    src: "/imagedataset/4.jpg",
+    name: "Trainable Attention",
+    url: "http://13.61.90.242:1234/ui/trainable-attention",
+  },
   {
     src: "/imagedataset/5.png",
     name: "Layer-wise Relevance Propagation (LRP)",
+    url: "https://example.com/lrp",
   },
-  { src: "/imagedataset/6.png", name: "Guided Backpropagation" },
-  { src: "/imagedataset/7.png", name: "Attention Map" },
-  { src: "/imagedataset/8.png", name: "Saliency Map" },
-  { src: "/imagedataset/9.png", name: "Occlusion & Sensitivity Analysis" },
+  {
+    src: "/imagedataset/6.png",
+    name: "Guided Backpropagation",
+    url: "https://example.com/guided-backprop",
+  },
+  {
+    src: "/imagedataset/7.png",
+    name: "Attention Map",
+    url: "https://example.com/attention-map",
+  },
+  {
+    src: "/imagedataset/8.png",
+    name: "Saliency Map",
+    url: "https://example.com/saliency-map",
+  },
+  {
+    src: "/imagedataset/9.png",
+    name: "Occlusion & Sensitivity Analysis",
+    url: "https://example.com/occlusion",
+  },
 ];
+
 // Button Component
 const Button = ({ children, className = "", ...props }) => (
   <button
@@ -289,21 +318,29 @@ export default function Component() {
             className="flex overflow-x-auto space-x-6 px-10 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
           >
             {imageData.map((item, i) => (
-              <Card key={i} className="flex-shrink-0 w-96">
-                <CardContent>
-                  <div className="aspect-[16/7] bg-gray-900 rounded-lg overflow-hidden relative">
-                    <Image
-                      src={item.src}
-                      alt={item.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-600 mt-3 text-center">
-                    {item.name}
-                  </p>
-                </CardContent>
-              </Card>
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 w-96"
+              >
+                <Card>
+                  <CardContent>
+                    <div className="aspect-[16/7] bg-gray-900 rounded-lg overflow-hidden relative">
+                      <Image
+                        src={item.src}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-3 text-center">
+                      {item.name}
+                    </p>
+                  </CardContent>
+                </Card>
+              </a>
             ))}
           </div>
 
@@ -321,20 +358,132 @@ export default function Component() {
           </p>
         </section>
 
-        {/* Statistics Chart */}
+        {/* Ultra sound explainablity */}
         <section className="mb-12 sm:mb-16">
-          <Card>
-            <CardContent className="p-6 sm:p-8">
-              <div className="h-48 sm:h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500 text-sm sm:text-base">
-                  Age Distribution Chart Placeholder
-                </p>
-              </div>
-              <p className="text-sm text-gray-600 mt-4 text-center">
-                Figure 2: Distribution of patient age.
-              </p>
-            </CardContent>
-          </Card>
+          <h3
+            className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
+          >
+            Ultra sound explainablity
+          </h3>
+          <section className="mb-12 sm:mb-16 relative">
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+              aria-label="Scroll left"
+              type="button"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <div
+              ref={scrollRef}
+              className="flex overflow-x-auto space-x-6 px-10 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+            >
+              {imageData.map((item, i) => (
+                <a
+                  key={i}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 w-96"
+                >
+                  <Card>
+                    <CardContent>
+                      <div className="aspect-[16/7] bg-gray-900 rounded-lg overflow-hidden relative">
+                        <Image
+                          src={item.src}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 mt-3 text-center">
+                        {item.name}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
+              ))}
+            </div>
+
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+              aria-label="Scroll right"
+              type="button"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <p className="text-sm text-gray-600 mt-4 text-center">
+              Figure 2: Example with BI-RADS 5 and BI-RADS 1 in opposing
+              breasts.
+            </p>
+          </section>
+        </section>
+
+        {/* Enhance explainablity */}
+        <section className="mb-12 sm:mb-16">
+          <h3
+            className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
+          >
+            Enhance explainablity
+          </h3>
+          <section className="mb-12 sm:mb-16 relative">
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+              aria-label="Scroll left"
+              type="button"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <div
+              ref={scrollRef}
+              className="flex overflow-x-auto space-x-6 px-10 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+            >
+              {imageData.map((item, i) => (
+                <a
+                  key={i}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 w-96"
+                >
+                  <Card>
+                    <CardContent>
+                      <div className="aspect-[16/7] bg-gray-900 rounded-lg overflow-hidden relative">
+                        <Image
+                          src={item.src}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 mt-3 text-center">
+                        {item.name}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
+              ))}
+            </div>
+
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md"
+              aria-label="Scroll right"
+              type="button"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
+
+            <p className="text-sm text-gray-600 mt-4 text-center">
+              Figure 2: Example with BI-RADS 5 and BI-RADS 1 in opposing
+              breasts.
+            </p>
+          </section>
         </section>
 
         {/* Data Table */}
