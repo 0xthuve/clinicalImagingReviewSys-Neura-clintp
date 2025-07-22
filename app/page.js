@@ -164,6 +164,15 @@ export default function Component() {
                 {item.name}
               </Link>
             ))}
+            <button
+              onClick={() => {
+                document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                window.location.href = "/loginmain";
+              }}
+              className="text-gray-200 hover:text-white transition-colors duration-200"
+            >
+              Logout
+            </button>
           </nav>
           <button
             className="md:hidden p-2"
@@ -201,6 +210,17 @@ export default function Component() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => {
+                    document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    window.location.href = "/loginmain";
+                  }}
+                  className="block text-gray-200 hover:text-white transition-colors duration-200"
+                >
+                  Logout
+                </button>
+              </li>
             </ul>
           </motion.nav>
         )}
