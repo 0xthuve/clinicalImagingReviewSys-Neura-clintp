@@ -33,7 +33,7 @@ const imageData = [
   {
     src: "/imagedataset/cam.png",
     name: "Class Activation Mapping (CAM)",
-    url: "http://13.61.90.242:1234/ui/cam",
+    url: "http://localhost:8501/",
   },
   {
     src: "/imagedataset/2.png",
@@ -166,7 +166,8 @@ export default function Component() {
             ))}
             <button
               onClick={() => {
-                document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie =
+                  "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 window.location.href = "/loginmain";
               }}
               className="text-gray-200 hover:text-white transition-colors duration-200"
@@ -213,7 +214,8 @@ export default function Component() {
               <li>
                 <button
                   onClick={() => {
-                    document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie =
+                      "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                     window.location.href = "/loginmain";
                   }}
                   className="block text-gray-200 hover:text-white transition-colors duration-200"
