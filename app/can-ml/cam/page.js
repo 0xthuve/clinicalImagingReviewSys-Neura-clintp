@@ -3,6 +3,9 @@
 import { useState } from "react";
 import axios from "axios";
 
+// Get the API base URL from environment variables
+const API_BASE_URL = process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL;
+
 export default function CancerDetectPage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -11,7 +14,7 @@ export default function CancerDetectPage() {
   const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
-    console.log("File selected:", e.target.files[0]); // Debug log
+    console.log("File selected:", e.target.files[0]);
     const file = e.target.files[0];
     if (!file) return;
 
@@ -22,8 +25,8 @@ export default function CancerDetectPage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log("Submit clicked"); // Debug log
+    e.preventDefault();
+    console.log("Submit clicked");
 
     if (!selectedFile) {
       setError("Please select a file first");
@@ -38,11 +41,11 @@ export default function CancerDetectPage() {
     formData.append("image", selectedFile);
 
     try {
-      console.log("Sending request..."); // Debug log
-      const response = await axios.post("http://127.0.0.1:5000/cam", formData, {
+      console.log("Sending request to:", `${API_BASE_URL}/cam`);
+      const response = await axios.post(`${API_BASE_URL}/cam`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("Response received:", response); // Debug log
+      console.log("Response received:", response);
 
       if (!response.data) {
         throw new Error("Empty response from server");
@@ -69,8 +72,6 @@ export default function CancerDetectPage() {
         </h1>
 
         <form onSubmit={handleSubmit}>
-          {" "}
-          {/* Wrap in form for better accessibility */}
           <input
             type="file"
             accept="image/png, image/jpeg"
@@ -78,7 +79,7 @@ export default function CancerDetectPage() {
             className="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
             file:rounded-full file:border-0 file:text-sm file:font-semibold
             file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
-            id="fileInput" // Added ID for better targeting
+            id="fileInput"
           />
           {preview && (
             <img
@@ -88,7 +89,7 @@ export default function CancerDetectPage() {
             />
           )}
           <button
-            type="submit" // Changed to type="submit"
+            type="submit"
             disabled={loading || !selectedFile}
             className={`w-full bg-pink-600 text-white font-semibold py-2 rounded-lg transition
               ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-pink-700"}
@@ -119,7 +120,7 @@ export default function CancerDetectPage() {
 
             {result.image_url && (
               <img
-                src={`http://127.0.0.1:5000${result.image_url}`}
+                src={`${API_BASE_URL}${result.image_url}`}
                 alt="GradCAM Result"
                 className="mt-4 rounded-lg w-full"
               />
