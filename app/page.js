@@ -33,7 +33,7 @@ const imageData = [
   {
     src: "/imagedataset/cam.png",
     name: "Class Activation Mapping (CAM)",
-    url: "http://localhost:8501/",
+    url: "/can-ml/cam",
   },
   {
     src: "/imagedataset/2.png",
