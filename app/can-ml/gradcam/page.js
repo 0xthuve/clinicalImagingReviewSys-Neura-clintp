@@ -68,7 +68,7 @@ export default function CancerDetectPage() {
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold text-center text-pink-600 mb-4">
-          🧠 Breast Cancer Prediction with CAM
+          🧠 Breast Cancer Prediction with GradCAM
         </h1>
 
         <form onSubmit={handleSubmit}>

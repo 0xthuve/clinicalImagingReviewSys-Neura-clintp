@@ -38,47 +38,47 @@ const imageData = [
   {
     src: "/imagedataset/2.png",
     name: "Gradient-weighted Class Activation Mapping (Grad-CAM)",
-    url: "http://13.61.90.242:1234/ui/gradcam",
+    url: "/can-ml/gradcam",
   },
   {
     src: "/imagedataset/3.png",
     name: "Integrated Gradients",
-    url: "http://13.61.90.242:1234/ui/ig",
+    url: "/can-ml/ig",
   },
   {
     src: "/imagedataset/3.1.png",
     name: "SHAP (SHapley Additive exPlanations)",
-    url: "http://13.61.90.242:1234/ui/shap",
+    url: "/can-ml/shap",
   },
   {
     src: "/imagedataset/4.jpg",
     name: "Trainable Attention",
-    url: "http://13.61.90.242:1234/ui/trainable-attention",
+    url: "#",
   },
   {
     src: "/imagedataset/5.png",
     name: "Layer-wise Relevance Propagation (LRP)",
-    url: "https://example.com/lrp",
+    url: "#",
   },
   {
     src: "/imagedataset/6.png",
     name: "Guided Backpropagation",
-    url: "https://example.com/guided-backprop",
+    url: "#",
   },
   {
     src: "/imagedataset/7.png",
     name: "Attention Map",
-    url: "https://example.com/attention-map",
+    url: "#",
   },
   {
     src: "/imagedataset/8.png",
     name: "Saliency Map",
-    url: "https://example.com/saliency-map",
+    url: "#",
   },
   {
     src: "/imagedataset/9.png",
     name: "Occlusion & Sensitivity Analysis",
-    url: "https://example.com/occlusion",
+    url: "#",
   },
 ];
 

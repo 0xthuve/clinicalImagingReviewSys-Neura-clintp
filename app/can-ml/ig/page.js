@@ -41,8 +41,8 @@ export default function CancerDetectPage() {
     formData.append("image", selectedFile);
 
     try {
-      console.log("Sending request to:", `${API_BASE_URL}/cam`);
-      const response = await axios.post(`${API_BASE_URL}/cam`, formData, {
+      console.log("Sending request to:", `${API_BASE_URL}/ig`);
+      const response = await axios.post(`${API_BASE_URL}/ig`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Response received:", response);
@@ -68,7 +68,7 @@ export default function CancerDetectPage() {
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold text-center text-pink-600 mb-4">
-          🧠 Breast Cancer Prediction with CAM
+          🧠 Breast Cancer Prediction with Integrated Gradients
         </h1>
 
         <form onSubmit={handleSubmit}>
