@@ -53,32 +53,32 @@ const imageData = [
   {
     src: "/imagedataset/4.jpg",
     name: "Trainable Attention",
-    url: "#",
+    url: "/can-ml/attention",
   },
   {
     src: "/imagedataset/5.png",
     name: "Layer-wise Relevance Propagation (LRP)",
-    url: "#",
+    url: "/can-ml/lrp",
   },
   {
     src: "/imagedataset/6.png",
     name: "Guided Backpropagation",
-    url: "#",
+    url: "/can-ml/guidedbp",
   },
   {
     src: "/imagedataset/7.png",
     name: "Attention Map",
-    url: "#",
+    url: "/can-ml/trainableattn",
   },
   {
     src: "/imagedataset/8.png",
     name: "Saliency Map",
-    url: "#",
+    url: "/can-ml/saliency",
   },
   {
     src: "/imagedataset/9.png",
     name: "Occlusion & Sensitivity Analysis",
-    url: "#",
+    url: "/can-ml/occlusion",
   },
 ];
 
