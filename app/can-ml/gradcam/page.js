@@ -3,7 +3,6 @@
 import { useState } from "react";
 import axios from "axios";
 
-// Get the API base URL from environment variables
 const API_BASE_URL = process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL;
 
 export default function CancerDetectPage() {
@@ -14,7 +13,6 @@ export default function CancerDetectPage() {
   const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
-    console.log("File selected:", e.target.files[0]);
     const file = e.target.files[0];
     if (!file) return;
 
@@ -26,7 +24,6 @@ export default function CancerDetectPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit clicked");
 
     if (!selectedFile) {
       setError("Please select a file first");
@@ -41,11 +38,9 @@ export default function CancerDetectPage() {
     formData.append("image", selectedFile);
 
     try {
-      console.log("Sending request to:", `${API_BASE_URL}/cam`);
       const response = await axios.post(`${API_BASE_URL}/cam`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("Response received:", response);
 
       if (!response.data) {
         throw new Error("Empty response from server");
@@ -82,11 +77,14 @@ export default function CancerDetectPage() {
             id="fileInput"
           />
           {preview && (
-            <img
-              src={preview}
-              alt="Preview"
-              className="mb-4 rounded-lg w-full"
-            />
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-2">Original Image:</p>
+              <img
+                src={preview}
+                alt="Preview"
+                className="rounded-lg w-full"
+              />
+            </div>
           )}
           <button
             type="submit"
@@ -118,12 +116,15 @@ export default function CancerDetectPage() {
               </span>
             </p>
 
-            {result.image_url && (
-              <img
-                src={`${API_BASE_URL}${result.image_url}`}
-                alt="GradCAM Result"
-                className="mt-4 rounded-lg w-full"
-              />
+            {result.image_base64 && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2">GradCAM Result:</p>
+                <img
+                  src={`data:image/png;base64,${result.image_base64}`}
+                  alt="GradCAM Result"
+                  className="rounded-lg w-full"
+                />
+              </div>
             )}
           </div>
         )}

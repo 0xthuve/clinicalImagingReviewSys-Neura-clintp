@@ -118,12 +118,15 @@ export default function CancerDetectPage() {
               </span>
             </p>
 
-            {result.image_url && (
-              <img
-                src={`${API_BASE_URL}${result.image_url}`}
-                alt="GradCAM Result"
-                className="mt-4 rounded-lg w-full"
-              />
+            {result.image_base64 && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2"> Result:</p>
+                <img
+                  src={`data:image/png;base64,${result.image_base64}`}
+                  alt="GradCAM Result"
+                  className="rounded-lg w-full"
+                />
+              </div>
             )}
           </div>
         )}
