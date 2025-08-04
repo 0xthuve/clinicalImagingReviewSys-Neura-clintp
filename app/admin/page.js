@@ -146,7 +146,7 @@ export default function AdminDashboard() {
 
   const handleSignOut = () => {
     localStorage.clear();
-    sessionStorage.clear();
+    localStorage.clear();
     document.cookie = "";
     router.push("/");
   };

@@ -118,13 +118,34 @@ export default function CancerDetectPage() {
               </span>
             </p>
 
-            {result.image_url && (
-              <img
-                src={`${API_BASE_URL}${result.image_url}`}
-                alt="GradCAM Result"
-                className="mt-4 rounded-lg w-full"
-              />
-            )}
+            {result.images_base64 && (
+  <div className="mt-4 space-y-4">
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Occlusion Heatmap:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.heatmap}`}
+        alt="Occlusion Heatmap"
+        className="rounded-lg w-full"
+      />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Occlusion Overlay:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.overlay}`}
+        alt="Occlusion Overlay"
+        className="rounded-lg w-full"
+      />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Occlusion Full:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.full}`}
+        alt="Occlusion Full"
+        className="rounded-lg w-full"
+      />
+    </div>
+  </div>
+)}
           </div>
         )}
       </div>

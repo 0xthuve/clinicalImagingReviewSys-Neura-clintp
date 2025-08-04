@@ -118,16 +118,34 @@ export default function CancerDetectPage() {
               </span>
             </p>
 
-            {result.image_base64 && (
-              <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2"> Result:</p>
-                <img
-                  src={`data:image/png;base64,${result.image_base64}`}
-                  alt="GradCAM Result"
-                  className="rounded-lg w-full"
-                />
-              </div>
-            )}
+            {result.images_base64 && (
+  <div className="mt-4 space-y-4">
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Heatmap:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.heatmap}`}
+        alt="IG Heatmap"
+        className="rounded-lg w-full"
+      />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Overlay:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.overlay}`}
+        alt="IG Overlay"
+        className="rounded-lg w-full"
+      />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500 mb-2">Full Visualization:</p>
+      <img
+        src={`data:image/png;base64,${result.images_base64.full}`}
+        alt="IG Full"
+        className="rounded-lg w-full"
+      />
+    </div>
+  </div>
+)}
           </div>
         )}
       </div>

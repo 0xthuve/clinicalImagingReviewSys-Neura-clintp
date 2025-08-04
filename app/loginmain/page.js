@@ -10,8 +10,8 @@ export default function LoginMain() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === "admin" && password === "adminneura2025") {
-      document.cookie = "auth=true; path=/";
+    if (username === "thanu" && password === "thanu1993") {
+      localStorage.setItem("auth", "true");
       router.push("/");
     } else {
       setError("Invalid username or password");

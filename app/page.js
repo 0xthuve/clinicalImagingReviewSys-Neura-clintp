@@ -315,7 +315,7 @@ export default function Component() {
           <h3
             className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
           >
-            Widly Used Explainable AI
+            UltraSound
           </h3>
           <p className="text-gray-700 leading-relaxed mb-4 text-sm sm:text-base">
             Clinicians can simply drag and drop scans to get instant,
@@ -385,7 +385,7 @@ export default function Component() {
           <h3
             className={`text-lg sm:text-xl font-semibold mb-4 text-gray-900 ${poppins.className}`}
           >
-            Ultra sound explainablity
+            Mammography
           </h3>
           <section className="mb-12 sm:mb-16 relative">
             <button

@@ -53,7 +53,7 @@ function ReviewCase() {
   const handleSignOut = () => {
     if (typeof window !== "undefined") {
       localStorage.clear();
-      sessionStorage.clear();
+      localStorage.clear();
       document.cookie = "";
     }
     router.push("/");
