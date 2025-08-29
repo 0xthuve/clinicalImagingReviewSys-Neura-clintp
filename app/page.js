@@ -153,7 +153,7 @@ export default function Component() {
               { name: "Datasets", href: "/datasets" },
               { name: "Researches", href: "#" },
 
-              { name: "News", href: "#" },
+                { name: "DICOM Viewer", href: "/DICOM" },
               { name: "Contact", href: "#" },
             ].map((item) => (
               <Link
@@ -198,7 +198,7 @@ export default function Component() {
                 { name: "Datasets", href: "/datasets" },
                 { name: "Researches", href: "#" },
 
-                { name: "News", href: "#" },
+                { name: "DICOM Viewer", href: "/DICOM" },
                 { name: "Contact", href: "#" },
               ].map((item) => (
                 <li key={item.name}>
