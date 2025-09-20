@@ -1,3 +1,5 @@
+      - name: Fix permissions for tar file
+        run: chmod 644 nextjs-app.tar
 name: Deploy to AWS EC2
 
 on:
@@ -53,7 +55,7 @@ jobs:
           host: ${{ env.EC2_HOST }}
           username: ${{ env.EC2_USER }}
           key: ${{ env.EC2_KEY }}
-          source: "${{ env.APP_NAME }}.tar"
+          source: "./${{ env.APP_NAME }}.tar"
           target: "~/${{ env.APP_NAME }}.tar"
 
       - name: Load and run Docker image on EC2
