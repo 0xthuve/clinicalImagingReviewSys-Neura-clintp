@@ -1,5 +1,3 @@
-      - name: Fix permissions for tar file
-        run: chmod 644 nextjs-app.tar
 name: Deploy to AWS EC2
 
 on:
@@ -30,24 +28,20 @@ jobs:
         run: npm ci
 
       - name: Create .env.local
-        run: |
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env.local
+        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env.local
 
       - name: Build Next.js app
         run: npm run build
 
       - name: Build Docker image
-        run: |
-          docker build -t ${{ env.APP_NAME }}:latest .
+        run: docker build -t ${{ env.APP_NAME }}:latest .
 
-
+      # ✅ Save Docker image to /tmp to avoid permission issues
       - name: Save Docker image as tar
-        run: |
-          docker save ${{ env.APP_NAME }}:latest -o ${{ env.APP_NAME }}.tar
+        run: docker save ${{ env.APP_NAME }}:latest -o /tmp/${{ env.APP_NAME }}.tar
 
-      - name: List files and permissions (debug)
-        run: |
-          ls -l
+      - name: List files (debug)
+        run: ls -l /tmp
 
       - name: Copy Docker image to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -55,7 +49,7 @@ jobs:
           host: ${{ env.EC2_HOST }}
           username: ${{ env.EC2_USER }}
           key: ${{ env.EC2_KEY }}
-          source: "./${{ env.APP_NAME }}.tar"
+          source: "/tmp/${{ env.APP_NAME }}.tar"
           target: "~/${{ env.APP_NAME }}.tar"
 
       - name: Load and run Docker image on EC2
