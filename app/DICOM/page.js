@@ -1,22 +1,29 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import cornerstone from 'cornerstone-core';
-import cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
-import dicomParser from 'dicom-parser';
-import Hammer from 'hammerjs';
-import { Inter, Poppins } from 'next/font/google';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
-const inter = Inter({ subsets: ['latin'] });
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
+// Import these only on the client side to avoid SSR issues
+let cornerstone, cornerstoneWADOImageLoader, dicomParser, Hammer;
 
-// Configure the WADO loader for simple local file loading
-cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
-cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-cornerstoneWADOImageLoader.external.Hammer = Hammer;
+if (typeof window !== 'undefined') {
+  // Dynamically import these libraries only on the client side
+  import('cornerstone-core').then((module) => {
+    cornerstone = module.default;
+  });
+  import('cornerstone-wado-image-loader').then((module) => {
+    cornerstoneWADOImageLoader = module.default;
+  });
+  import('dicom-parser').then((module) => {
+    dicomParser = module.default;
+  });
+  import('hammerjs').then((module) => {
+    Hammer = module.default;
+  });
+}
 
 export default function DicomViewer() {
   const elementRef = useRef(null);
@@ -34,79 +41,103 @@ export default function DicomViewer() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    const el = elementRef.current;
-    if (!el) return;
-
-    // Enable cornerstone on our DOM element
-    cornerstone.enable(el);
-
-    // Set up basic mouse wheel zoom behavior
-    const onWheel = (e) => {
-      e.preventDefault();
-      try {
-        const viewport = cornerstone.getViewport(el);
-        const delta = e.deltaY || e.wheelDelta;
-        const scaleFactor = delta > 0 ? 0.9 : 1.1;
-        const newViewport = { 
-          ...viewport, 
-          scale: viewport.scale * scaleFactor 
-        };
-        cornerstone.setViewport(el, newViewport);
-        setViewport(newViewport);
-      } catch (err) {
-        console.warn('Wheel interaction failed:', err);
-      }
-    };
-
-    el.addEventListener('wheel', onWheel);
-
-    // Set up drag and drop
-    const dropArea = dropAreaRef.current;
-    if (dropArea) {
-      const preventDefaults = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      };
-      
-      const highlight = () => dropArea.classList.add('bg-blue-100', 'border-blue-400');
-      const unhighlight = () => dropArea.classList.remove('bg-blue-100', 'border-blue-400');
-      
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-      });
-      
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false);
-      });
-      
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false);
-      });
-      
-      dropArea.addEventListener('drop', handleDrop, false);
-    }
-
-    return () => {
-      el.removeEventListener('wheel', onWheel);
-      try { cornerstone.disable(el); } catch (err) {}
-    };
-  }, []);
-
-  const handleDrop = (e) => {
+  const handleDrop = useCallback((e) => {
     const dt = e.dataTransfer;
     const files = dt.files;
     if (files.length > 0) {
       loadFile(files[0]);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Only run this effect on the client side
+    if (typeof window === 'undefined') return;
+
+    const initializeCornerstone = async () => {
+      // Wait for libraries to load
+      if (!cornerstone || !cornerstoneWADOImageLoader || !dicomParser || !Hammer) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return initializeCornerstone();
+      }
+
+      // Configure the WADO loader for simple local file loading
+      cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+      cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+      cornerstoneWADOImageLoader.external.Hammer = Hammer;
+
+      const el = elementRef.current;
+      if (!el) return;
+
+      // Enable cornerstone on our DOM element
+      cornerstone.enable(el);
+
+      // Set up basic mouse wheel zoom behavior
+      const onWheel = (e) => {
+        e.preventDefault();
+        try {
+          const viewport = cornerstone.getViewport(el);
+          const delta = e.deltaY || e.wheelDelta;
+          const scaleFactor = delta > 0 ? 0.9 : 1.1;
+          const newViewport = { 
+            ...viewport, 
+            scale: viewport.scale * scaleFactor 
+          };
+          cornerstone.setViewport(el, newViewport);
+          setViewport(newViewport);
+        } catch (err) {
+          console.warn('Wheel interaction failed:', err);
+        }
+      };
+
+      el.addEventListener('wheel', onWheel);
+
+      // Set up drag and drop
+      const dropArea = dropAreaRef.current;
+      if (dropArea) {
+        const preventDefaults = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        };
+        
+        const highlight = () => dropArea.classList.add('bg-blue-100', 'border-blue-400');
+        const unhighlight = () => dropArea.classList.remove('bg-blue-100', 'border-blue-400');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+          dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+      }
+
+      return () => {
+        el.removeEventListener('wheel', onWheel);
+        try { cornerstone.disable(el); } catch (err) {}
+      };
+    };
+
+    initializeCornerstone();
+  }, [handleDrop]);
 
   const loadFile = async (file) => {
-    if (!file) return;
+    if (!file || typeof window === 'undefined') return;
     setIsLoading(true);
     setStatus('Loading file...');
 
     try {
+      // Wait for cornerstone to be available
+      if (!cornerstoneWADOImageLoader) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return loadFile(file);
+      }
+
       // Create a URL for the file
       const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
       setLoadedImageId(imageId);
@@ -157,11 +188,17 @@ export default function DicomViewer() {
 
   const onLoadUrl = async () => {
     const url = urlRef.current && urlRef.current.value.trim();
-    if (!url) return;
+    if (!url || typeof window === 'undefined') return;
     setIsLoading(true);
     setStatus('Loading URL...');
 
     try {
+      // Wait for cornerstone to be available
+      if (!cornerstone) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return onLoadUrl();
+      }
+
       // For remote URLs, prefix with wadouri:
       const imageId = url.startsWith('wadouri:') ? url : 'wadouri:' + url;
       setLoadedImageId(imageId);
@@ -184,7 +221,7 @@ export default function DicomViewer() {
 
   const resetView = () => {
     const el = elementRef.current;
-    if (!el) return;
+    if (!el || typeof window === 'undefined') return;
     try {
       const image = cornerstone.getImage(el);
       const viewport = cornerstone.getDefaultViewportForImage(el, image);
@@ -197,7 +234,7 @@ export default function DicomViewer() {
 
   const invertImage = () => {
     const el = elementRef.current;
-    if (!el) return;
+    if (!el || typeof window === 'undefined') return;
     try {
       const newViewport = {
         ...viewport,
@@ -212,7 +249,7 @@ export default function DicomViewer() {
 
   const adjustWindowLevel = (type, value) => {
     const el = elementRef.current;
-    if (!el) return;
+    if (!el || typeof window === 'undefined') return;
     try {
       const newViewport = { ...viewport };
       
@@ -239,17 +276,17 @@ export default function DicomViewer() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${inter.className}`}>
+    <div className="min-h-screen bg-gray-50 font-sans">
       {/* Header */}
       <header className="bg-gradient-to-r from-[#0b354c] to-[#1a4a6b] text-white px-4 py-4 sticky top-0 z-50 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className={`text-white font-bold text-lg ${poppins.className}`}>
+              <span className="text-white font-bold text-lg font-poppins">
                 B
               </span>
             </div>
-            <span className={`text-2xl font-bold ${poppins.className}`}>
+            <span className="text-2xl font-bold font-poppins">
               Thanusanth
             </span>
           </div>
@@ -272,9 +309,11 @@ export default function DicomViewer() {
             ))}
             <button
               onClick={() => {
-                document.cookie =
-                  "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                window.location.href = "/loginmain";
+                if (typeof window !== "undefined") {
+                  document.cookie =
+                    "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                  window.location.href = "/loginmain";
+                }
               }}
               className="text-gray-200 hover:text-white transition-colors duration-200"
             >
@@ -319,9 +358,11 @@ export default function DicomViewer() {
               <li>
                 <button
                   onClick={() => {
-                    document.cookie =
-                      "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                    window.location.href = "/loginmain";
+                    if (typeof window !== "undefined") {
+                      document.cookie =
+                        "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                      window.location.href = "/loginmain";
+                    }
                   }}
                   className="block text-gray-200 hover:text-white transition-colors duration-200"
                 >
@@ -475,7 +516,7 @@ export default function DicomViewer() {
                 <button 
                   onClick={() => {
                     const el = elementRef.current;
-                    if (!el) return;
+                    if (!el || typeof window === 'undefined') return;
                     const newViewport = { ...viewport, scale: viewport.scale * 1.2 };
                     cornerstone.setViewport(el, newViewport);
                     setViewport(newViewport);
@@ -487,7 +528,7 @@ export default function DicomViewer() {
                 <button 
                   onClick={() => {
                     const el = elementRef.current;
-                    if (!el) return;
+                    if (!el || typeof window === 'undefined') return;
                     const newViewport = { ...viewport, scale: viewport.scale * 0.8 };
                     cornerstone.setViewport(el, newViewport);
                     setViewport(newViewport);
@@ -546,22 +587,24 @@ export default function DicomViewer() {
                 </button>
                 <button
                   onClick={() => {
-                    try {
-                      const el = elementRef.current;
-                      const canvas = el.querySelector('canvas');
-                      if (!canvas) {
-                        alert('No image available to save');
-                        return;
+                    if (typeof window !== "undefined" && typeof document !== "undefined") {
+                      try {
+                        const el = elementRef.current;
+                        const canvas = el.querySelector('canvas');
+                        if (!canvas) {
+                          alert('No image available to save');
+                          return;
+                        }
+                        const dataUrl = canvas.toDataURL('image/png');
+                        const link = document.createElement('a');
+                        link.href = dataUrl;
+                        link.download = 'dicom-snapshot.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      } catch (err) {
+                        alert('Save failed: ' + err.message);
                       }
-                      const dataUrl = canvas.toDataURL('image/png');
-                      const link = document.createElement('a');
-                      link.href = dataUrl;
-                      link.download = 'dicom-snapshot.png';
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    } catch (err) {
-                      alert('Save failed: ' + err.message);
                     }
                   }}
                   className="flex-1 bg-blue-100 text-blue-700 py-2 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
