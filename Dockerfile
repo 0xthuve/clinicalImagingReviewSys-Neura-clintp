@@ -30,7 +30,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/.env ./
 
 # Expose port 3000
 EXPOSE 3000
@@ -38,5 +37,6 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 
-# Start the Next.js app
+# Mongo URI will be injected at runtime
+# CMD starts the Next.js app
 CMD ["npm", "start"]
