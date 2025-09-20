@@ -33,8 +33,6 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
 
       - name: Build Docker image
         run: |
