@@ -14,7 +14,6 @@ jobs:
       EC2_USER: ${{ secrets.EC2_USER }}
       EC2_KEY: ${{ secrets.EC2_KEY }}
       APP_NAME: nextjs-app
-      MONGO_URI: ${{ secrets.MONGO_URI }}   # ← Add your Mongo URI here
 
     steps:
       - name: Checkout code
@@ -28,16 +27,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create .env.production
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env.production
+
       - name: Build Next.js app
         run: npm run build
         env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}   # ← Ensure it's available during build
+          MONGO_URI: ${{ secrets.MONGO_URI }}
 
       - name: Build Docker image
         run: |
           docker build -t ${{ env.APP_NAME }}:latest .
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}   # ← Pass to Docker build if needed
 
       - name: Save Docker image as tar
         run: |
