@@ -6,24 +6,12 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
-// Import these only on the client side to avoid SSR issues
-let cornerstone, cornerstoneWADOImageLoader, dicomParser, Hammer;
 
-if (typeof window !== 'undefined') {
-  // Dynamically import these libraries only on the client side
-  import('cornerstone-core').then((module) => {
-    cornerstone = module.default;
-  });
-  import('cornerstone-wado-image-loader').then((module) => {
-    cornerstoneWADOImageLoader = module.default;
-  });
-  import('dicom-parser').then((module) => {
-    dicomParser = module.default;
-  });
-  import('hammerjs').then((module) => {
-    Hammer = module.default;
-  });
-}
+// Use refs to store browser-only libraries
+const cornerstoneRef = { current: null };
+const cornerstoneWADOImageLoaderRef = { current: null };
+const dicomParserRef = { current: null };
+const HammerRef = { current: null };
 
 export default function DicomViewer() {
   const elementRef = useRef(null);
@@ -41,102 +29,20 @@ export default function DicomViewer() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleDrop = useCallback((e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if (files.length > 0) {
-      loadFile(files[0]);
-    }
-  }, [loadFile]);
-
-  useEffect(() => {
-    // Only run this effect on the client side
-    if (typeof window === 'undefined') return;
-
-    const initializeCornerstone = async () => {
-      // Wait for libraries to load
-      if (!cornerstone || !cornerstoneWADOImageLoader || !dicomParser || !Hammer) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        return initializeCornerstone();
-      }
-
-      // Configure the WADO loader for simple local file loading
-      cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
-      cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-      cornerstoneWADOImageLoader.external.Hammer = Hammer;
-
-      const el = elementRef.current;
-      if (!el) return;
-
-      // Enable cornerstone on our DOM element
-      cornerstone.enable(el);
-
-      // Set up basic mouse wheel zoom behavior
-      const onWheel = (e) => {
-        e.preventDefault();
-        try {
-          const viewport = cornerstone.getViewport(el);
-          const delta = e.deltaY || e.wheelDelta;
-          const scaleFactor = delta > 0 ? 0.9 : 1.1;
-          const newViewport = { 
-            ...viewport, 
-            scale: viewport.scale * scaleFactor 
-          };
-          cornerstone.setViewport(el, newViewport);
-          setViewport(newViewport);
-        } catch (err) {
-          console.warn('Wheel interaction failed:', err);
-        }
-      };
-
-      el.addEventListener('wheel', onWheel);
-
-      // Set up drag and drop
-      const dropArea = dropAreaRef.current;
-      if (dropArea) {
-        const preventDefaults = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        };
-        
-        const highlight = () => dropArea.classList.add('bg-blue-100', 'border-blue-400');
-        const unhighlight = () => dropArea.classList.remove('bg-blue-100', 'border-blue-400');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-          dropArea.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-          dropArea.addEventListener(eventName, highlight, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-          dropArea.addEventListener(eventName, unhighlight, false);
-        });
-        
-        dropArea.addEventListener('drop', handleDrop, false);
-      }
-
-      return () => {
-        el.removeEventListener('wheel', onWheel);
-        try { cornerstone.disable(el); } catch (err) {}
-      };
-    };
-
-    initializeCornerstone();
-  }, [handleDrop]);
-
-  const loadFile = async (file) => {
+  const loadFile = useCallback(async (file) => {
     if (!file || typeof window === 'undefined') return;
     setIsLoading(true);
     setStatus('Loading file...');
 
     try {
       // Wait for cornerstone to be available
-      if (!cornerstoneWADOImageLoader) {
+      if (!cornerstoneWADOImageLoaderRef.current) {
         await new Promise(resolve => setTimeout(resolve, 100));
         return loadFile(file);
       }
+
+      const cornerstone = cornerstoneRef.current;
+      const cornerstoneWADOImageLoader = cornerstoneWADOImageLoaderRef.current;
 
       // Create a URL for the file
       const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
@@ -179,7 +85,93 @@ export default function DicomViewer() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+      loadFile(files[0]);
+    }
+  }, [loadFile]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let isMounted = true;
+    Promise.all([
+      import('cornerstone-core'),
+      import('cornerstone-wado-image-loader'),
+      import('dicom-parser'),
+      import('hammerjs')
+    ]).then(([core, wado, dicom, hammer]) => {
+      if (!isMounted) return;
+      cornerstoneRef.current = core.default;
+      cornerstoneWADOImageLoaderRef.current = wado.default;
+      dicomParserRef.current = dicom.default;
+      HammerRef.current = hammer.default;
+
+      const cornerstone = cornerstoneRef.current;
+      const cornerstoneWADOImageLoader = cornerstoneWADOImageLoaderRef.current;
+      const dicomParser = dicomParserRef.current;
+      const Hammer = HammerRef.current;
+
+      // Configure the WADO loader for simple local file loading
+      cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+      cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+      cornerstoneWADOImageLoader.external.Hammer = Hammer;
+
+      const el = elementRef.current;
+      if (!el) return;
+
+      cornerstone.enable(el);
+
+      const onWheel = (e) => {
+        e.preventDefault();
+        try {
+          const viewport = cornerstone.getViewport(el);
+          const delta = e.deltaY || e.wheelDelta;
+          const scaleFactor = delta > 0 ? 0.9 : 1.1;
+          const newViewport = { 
+            ...viewport, 
+            scale: viewport.scale * scaleFactor 
+          };
+          cornerstone.setViewport(el, newViewport);
+          setViewport(newViewport);
+        } catch (err) {
+          console.warn('Wheel interaction failed:', err);
+        }
+      };
+
+      el.addEventListener('wheel', onWheel);
+
+      const dropArea = dropAreaRef.current;
+      if (dropArea) {
+        const preventDefaults = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        };
+        const highlight = () => dropArea.classList.add('bg-blue-100', 'border-blue-400');
+        const unhighlight = () => dropArea.classList.remove('bg-blue-100', 'border-blue-400');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+          dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropArea.addEventListener(eventName, highlight, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        dropArea.addEventListener('drop', handleDrop, false);
+      }
+
+      // Cleanup
+      return () => {
+        el.removeEventListener('wheel', onWheel);
+        try { cornerstone.disable(el); } catch (err) {}
+      };
+    });
+    return () => { isMounted = false; };
+  }, [handleDrop]);
 
   const onFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
@@ -259,7 +251,7 @@ export default function DicomViewer() {
         newViewport.voi.windowCenter = viewport.voi.windowCenter + value;
       }
       
-      cornerstone.setViewport(el, newViewport);
+      cornerstoneRef.current?.setViewport(el, newViewport);
       setViewport(newViewport);
       
       // Update image info if available
