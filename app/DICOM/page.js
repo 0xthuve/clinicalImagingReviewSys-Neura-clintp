@@ -47,7 +47,7 @@ export default function DicomViewer() {
     if (files.length > 0) {
       loadFile(files[0]);
     }
-  }, []);
+  }, [loadFile]);
 
   useEffect(() => {
     // Only run this effect on the client side
