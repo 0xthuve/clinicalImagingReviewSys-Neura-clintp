@@ -1,4 +1,4 @@
-name: Deploy to AWS EC2
+name: Deploy to AWS EC2 via Docker Hub
 
 on:
   push:
@@ -10,58 +10,56 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_USER: ${{ secrets.EC2_USER }}
-      EC2_KEY: ${{ secrets.EC2_KEY }}
       APP_NAME: nextjs-app
+      DOCKER_IMAGE: your-dockerhub-username/nextjs-app
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '20'
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Create .env.local
-        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env.local
-
-      - name: Build Next.js app
+      # Step 4: Build project
+      - name: Build project
         run: npm run build
 
+      # Step 5: Build Docker image
       - name: Build Docker image
-        run: docker build -t ${{ env.APP_NAME }}:latest .
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE }}:latest .
 
-      # ✅ Save Docker image to /tmp to avoid permission issues
-      - name: Save Docker image as tar
-        run: docker save ${{ env.APP_NAME }}:latest -o /tmp/${{ env.APP_NAME }}.tar
-
-      - name: List files (debug)
-        run: ls -l /tmp
-
-      - name: Copy Docker image to EC2
-        uses: appleboy/scp-action@v0.1.7
+      # Step 6: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_USER }}
-          key: ${{ env.EC2_KEY }}
-          source: "/tmp/${{ env.APP_NAME }}.tar"
-          target: "~/${{ env.APP_NAME }}.tar"
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Load and run Docker image on EC2
-        uses: appleboy/ssh-action@v1.0.3
+      # Step 7: Push Docker image
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ env.DOCKER_IMAGE }}:latest
+
+      # Step 8: SSH into EC2 and deploy
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_USER }}
-          key: ${{ env.EC2_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
-            docker load -i ~/${{ env.APP_NAME }}.tar
+            docker pull ${{ env.DOCKER_IMAGE }}:latest
             docker stop ${{ env.APP_NAME }} || true
             docker rm ${{ env.APP_NAME }} || true
             docker run -d --name ${{ env.APP_NAME }} -p 3000:3000 \
               -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
-              ${{ env.APP_NAME }}:latest
+              ${{ env.DOCKER_IMAGE }}:latest
