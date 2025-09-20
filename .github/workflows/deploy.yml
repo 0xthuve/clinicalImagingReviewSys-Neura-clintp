@@ -70,5 +70,5 @@ jobs:
               -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
               ${{ env.DOCKER_IMAGE }}:latest
              # ⬇️ Add these two lines:
-          timeout: 600           # total connection timeout (default 30s)
-          command_timeout: 600   # script execution timeout (default 60s)
+          timeout: 10m            # <-- duration with unit
+          command_timeout: 10m    # <-- duration with unit
