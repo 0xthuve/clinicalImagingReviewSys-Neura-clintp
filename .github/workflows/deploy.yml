@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_NAME: nextjs-app
-      DOCKER_IMAGE: your-dockerhub-username/nextjs-app
+      APP_NAME: brea-can
+      DOCKER_IMAGE: thuvecodes/brea-can
 
     steps:
       # Step 1: Checkout code
