@@ -19,6 +19,10 @@ import {
 import { Suspense } from "react";
 
 function ReviewCase() {
+  // Seed expert users on page load
+  useEffect(() => {
+    fetch("/api/user/seed", { method: "POST" });
+  }, []);
   const searchParams = useSearchParams();
   const router = useRouter();
   const roleParam = searchParams.get("role")?.toLowerCase() || "";
