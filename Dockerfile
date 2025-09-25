@@ -34,7 +34,7 @@ COPY --from=builder /app/next.config.mjs ./
 # Expose port 3000ss
 EXPOSE 3000
 
-# Set environment variable for production
+# Set environment variable for pmkroduction
 ENV NODE_ENV=production
 
 # Mongo URI will be injected at runtime
