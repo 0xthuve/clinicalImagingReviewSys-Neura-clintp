@@ -31,7 +31,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./
 
-# Expose port 3000
+# Expose port 3000ss
 EXPOSE 3000
 
 # Set environment variable for production
