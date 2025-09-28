@@ -1,7 +1,7 @@
 // lib/mongodb.jshj
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/BCAN";
 const options = {};
 
 if (!uri) {
