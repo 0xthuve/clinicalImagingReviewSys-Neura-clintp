@@ -5,16 +5,33 @@ import clientPromise from "../../lib/mongodb";
 
 export async function GET() {
   try {
+    console.log("Attempting to connect to MongoDB...");
+    console.log("MongoDB URI:", process.env.MONGODB_URI ? "Set" : "Not set");
+    
     const client = await clientPromise;
+    console.log("MongoDB client connected successfully");
+    
     const db = client.db("BCAN");
-
+    console.log("Database BCAN selected");
+    
     const patients = await db.collection("patients").find({}).toArray();
+    console.log(`Found ${patients.length} patients`);
 
     return NextResponse.json({ patients });
   } catch (error) {
-    console.error(error);
+    console.error("Database connection error:", error);
+    console.error("Error stack:", error.stack);
+    console.log("Environment variables:", {
+      NODE_ENV: process.env.NODE_ENV,
+      MONGODB_URI: process.env.MONGODB_URI ? "Set" : "Not set"
+    });
+    
     return NextResponse.json(
-      { error: "Failed to fetch patients" },
+      { 
+        error: "Failed to fetch patients",
+        details: error.message,
+        mongoUri: process.env.MONGODB_URI ? "Set" : "Not set"
+      },
       { status: 500 }
     );
   }

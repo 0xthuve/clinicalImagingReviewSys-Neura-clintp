@@ -3,26 +3,50 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: nextjs_app
+    container_name: brea-can-app
     ports:
       - "3000:3000"
-    env_file:
-      - .env.prod      # Make sure this file exists and contains your MONGO_URI
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/BCAN
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - brea-can-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   mongo:
     image: mongo:6.0
-    container_name: mongodb
+    container_name: brea-can-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-example}
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: BCAN
     restart: unless-stopped
+    networks:
+      - brea-can-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   mongo_data:
+
+networks:
+  brea-can-network:
+    driver: bridge
