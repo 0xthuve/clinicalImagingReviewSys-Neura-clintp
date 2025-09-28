@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BREA-CAN - Breast Cancer Analysis System
 
-## Getting Started
+A Next.js application for breast cancer image analysis with explainable AI, featuring radiologist and consultant review capabilities.
 
-First, run the development server:
+## 🚀 Quick Start
 
+### Development
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+### Production Deployment (Docker)
+```bash
+docker-compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📋 Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Medical Image Analysis**: Upload and analyze breast cancer images
+- **Expert Review System**: Radiologist and consultant review workflow  
+- **Admin Dashboard**: Patient management and review tracking
+- **Explainable AI**: Multiple visualization techniques (GradCAM, SHAP, etc.)
+- **Docker Deployment**: Containerized for easy deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔧 Tech Stack
 
-## Learn More
+- **Frontend**: Next.js 15.3.3, React, Tailwind CSS
+- **Backend**: Next.js API Routes, MongoDB
+- **Database**: MongoDB 6.0
+- **Deployment**: Docker, GitHub Actions, AWS EC2
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/
+├── api/              # API routes
+├── admin/           # Admin dashboard
+├── components/      # React components
+├── can-ml/         # ML model endpoints
+└── lib/            # Database connection
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🐳 Deployment
 
-## Deploy on Vercel
+The application automatically deploys via GitHub Actions when pushing to the main branch.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Expert User Credentials** (auto-seeded):
+- Consultants: Dr. Anjali Kumaran, Dr. Ramesh Perera, Dr. Malathi Sivarajah
+- Radiologists: Dr. Nilani Fernando, Dr. K. Tharshan, Dr. Mohamed Niyas  
+- Admin: SenzuraAdmin
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔍 Health Check
+
+Monitor deployment health:
+```bash
+curl http://your-server:3000/api/health
+```
+
+## 📱 Access Points
+
+- **Main App**: `http://your-server:3000`
+- **Admin Dashboard**: `http://your-server:3000/admin`
+- **Login**: `http://your-server:3000/login`

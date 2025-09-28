@@ -67,7 +67,7 @@ jobs:
             mkdir -p ~/brea-can-deployment
             cd ~/brea-can-deployment
             
-            # Create docker-compose.yml for production
+            # Create docker-compose.yml for production (without authentication)
             cat > docker-compose.yml << 'EOF'
             version: '3.8'
             
@@ -93,10 +93,7 @@ jobs:
                   - "27017:27017"
                 volumes:
                   - mongo_data:/data/db
-                environment:
-                  - MONGO_INITDB_ROOT_USERNAME=admin
-                  - MONGO_INITDB_ROOT_PASSWORD=password123
-                  - MONGO_INITDB_DATABASE=BCAN
+                # No authentication to avoid connection issues
                 restart: unless-stopped
                 networks:
                   - brea-can-network
@@ -108,6 +105,30 @@ jobs:
               brea-can-network:
                 driver: bridge
             EOF
+            
+            # Seed users after containers start
+            echo "Seeding expert users..."
+            sleep 15
+            
+            # Seed users directly in deployment
+            docker-compose exec -T mongo mongosh --quiet << 'SEED_EOF'
+            use BCAN;
+            try {
+              db.user.deleteMany({});
+              var result = db.user.insertMany([
+                { id: 'c001', name: 'Dr. Anjali Kumaran', category: 'Consultant' },
+                { id: 'c002', name: 'Dr. Ramesh Perera', category: 'Consultant' },
+                { id: 'r001', name: 'Dr. Nilani Fernando', category: 'Radiologist' },
+                { id: 'r002', name: 'Dr. K. Tharshan', category: 'Radiologist' },
+                { id: 'c003', name: 'Dr. Malathi Sivarajah', category: 'Consultant' },
+                { id: 'r003', name: 'Dr. Mohamed Niyas', category: 'Radiologist' },
+                { id: 'admin', name: 'SenzuraAdmin', category: 'Admin' }
+              ]);
+              print('SUCCESS: Seeded ' + result.insertedCount + ' users');
+            } catch (error) {
+              print('ERROR: ' + error.message);
+            }
+            SEED_EOF
             
             # Pull the latest images
             docker pull ${{ env.DOCKER_IMAGE }}:latest
