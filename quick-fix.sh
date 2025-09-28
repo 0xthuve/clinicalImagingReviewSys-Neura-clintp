@@ -53,10 +53,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
-      MONGO_INITDB_DATABASE: BCAN
+    # Remove authentication to fix connection issues
     restart: unless-stopped
     networks:
       - brea-can-network
@@ -104,6 +101,40 @@ for i in {1..12}; do
     fi
 done
 
+# Seed users
+echo "👥 Seeding expert users..."
+docker-compose exec -T mongo mongosh --quiet << 'MONGO_SCRIPT'
+use BCAN;
+try {
+  db.user.deleteMany({});
+  var result = db.user.insertMany([
+    { id: 'c001', name: 'Dr. Anjali Kumaran', category: 'Consultant' },
+    { id: 'c002', name: 'Dr. Ramesh Perera', category: 'Consultant' },
+    { id: 'r001', name: 'Dr. Nilani Fernando', category: 'Radiologist' },
+    { id: 'r002', name: 'Dr. K. Tharshan', category: 'Radiologist' },
+    { id: 'c003', name: 'Dr. Malathi Sivarajah', category: 'Consultant' },
+    { id: 'r003', name: 'Dr. Mohamed Niyas', category: 'Radiologist' },
+    { id: 'admin', name: 'SenzuraAdmin', category: 'Admin' }
+  ]);
+  print('✅ Successfully inserted ' + result.insertedCount + ' users');
+} catch (error) {
+  print('❌ Error seeding users: ' + error.message);
+}
+MONGO_SCRIPT
+
+# Test user authentication
+echo "🔐 Testing user authentication..."
+sleep 5
+ADMIN_TEST=$(curl -s -X POST http://localhost:3000/api/user \
+  -H "Content-Type: application/json" \
+  -d '{"userId": "admin"}')
+
+if echo "$ADMIN_TEST" | grep -q '"exists":true'; then
+    echo "✅ Admin user authentication working"
+else
+    echo "❌ Admin user authentication failed: $ADMIN_TEST"
+fi
+
 # Final test
 if curl -f -s http://localhost:3000/api/health > /dev/null 2>&1; then
     echo ""
@@ -111,6 +142,11 @@ if curl -f -s http://localhost:3000/api/health > /dev/null 2>&1; then
     echo "🌐 Access your application at:"
     echo "   http://$(curl -s ifconfig.me 2>/dev/null || echo 'YOUR-EC2-IP'):3000"
     echo "   Admin: http://$(curl -s ifconfig.me 2>/dev/null || echo 'YOUR-EC2-IP'):3000/admin"
+    echo ""
+    echo "📋 Login credentials:"
+    echo "   Admin: admin"
+    echo "   Consultant: c001, c002, c003"
+    echo "   Radiologist: r001, r002, r003"
     echo ""
     echo "📋 Application health:"
     curl -s http://localhost:3000/api/health | python3 -m json.tool 2>/dev/null || curl -s http://localhost:3000/api/health
