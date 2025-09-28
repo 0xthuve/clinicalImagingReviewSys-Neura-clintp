@@ -1,6 +1,27 @@
 import { NextResponse } from "next/server";
 import clientPromise from "../../lib/mongodb";
 
+export async function GET() {
+  try {
+    const client = await clientPromise;
+    const db = client.db("BCAN");
+    const collection = db.collection("user");
+    
+    const users = await collection.find({}).toArray();
+    
+    return NextResponse.json({ 
+      message: `Found ${users.length} users`,
+      users: users
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return NextResponse.json({ 
+      error: "Internal Server Error",
+      details: error.message 
+    }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     const { userId } = await req.json();
